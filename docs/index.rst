@@ -11,7 +11,9 @@ Welcome to progress_manager's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   
+   links
+   install
 
 
 
