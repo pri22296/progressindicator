@@ -18,6 +18,9 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
     requirements : array_like
         Keys whose value, the extension needs.
 
+    update_interval : float
+        Desired update interval for the extension.
+
     Notes
     -----
     All extensions need to explicitly call __init__ of the BaseExtension with
@@ -113,7 +116,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         """
         return self._value
 
-    def _on_begin(self, params):
+    def on_begin(self, params):
         """Override this method to customize the initial look of the extension.
 
         By default, the appropriate after-validation method is called.
@@ -123,9 +126,9 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         params : array_like
             Values of all keys specified in the requirements of the extension.
         """
-        self._on_update(params)
+        self.on_update(params)
 
-    def _on_update(self, params):
+    def on_update(self, params):
         """Override this method to set the look of the extension at each update.
 
         This method is called at each update. It is recommended to override the
@@ -138,11 +141,11 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
             Values of all keys specified in the requirements of the extension.
         """
         if self._validate(params):
-            self._on_validated(params)
+            self.on_validated(params)
         else:
-            self._on_invalidated(params)
+            self.on_invalidated(params)
 
-    def _on_end(self, params):
+    def on_end(self, params):
         """Override this method to customize the final look of the extension.
 
         By default, the appropriate after-validation method is called.
@@ -152,9 +155,9 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         params : array_like
             Values of all keys specified in the requirements of the extension.
         """
-        self._on_update(params)
+        self.on_update(params)
 
-    def _on_validated(self, params):
+    def on_validated(self, params):
         """Override this method to set the look of the extension at each update.
 
         This method is only called during an update if value of all keys in
@@ -167,7 +170,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         """
         pass
 
-    def _on_invalidated(self, params):
+    def on_invalidated(self, params):
         """Override this method to set the look of the extension at each update.
 
         This method is only called during an update if value for atleast one key
@@ -188,38 +191,74 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         self._tag = tag
 
     def get_requirements(self):
+        """Get the requirements of the extension.
+
+        Returns
+        -------
+        array_like:
+            requirements of the extension.
+
+        Notes
+        -----
+        Never Override this method.
+        """
         return self._requirements
 
     def get_tag(self):
+        """
+        Return the `tag` of the Provider.
+        """
         return self._tag
 
     def set_value(self, value):
+        """This method sets the content which is to be printed to console.
+
+        Parameters
+        ----------
+        value : str
+            Value to be set.
+
+        Notes
+        -----
+        Never Override this method.
+        """
         self._value = value
 
     def get_value(self):
+        """Get the current value to be printed to console.
+
+        Returns
+        -------
+        str
+            value set by `set_value`
+
+        Notes
+        -----
+        Never Override this method.
+        """
         return self._value
 
     def _is_update_required(self):
         return True
 
-    def _on_begin(self, params):
-        self._on_publish(params)
+    def on_begin(self, params):
+        self.on_publish(params)
 
-    def _on_publish(self, params):
+    def on_publish(self, params):
         if self._validate(params):
-            self._on_validated(params)
+            self.on_validated(params)
         else:
-            self._on_invalidated(params)
+            self.on_invalidated(params)
 
-    def _on_end(self, params):
-        self._on_publish(params)
+    def on_end(self, params):
+        self.on_publish(params)
 
     def _validate(self, params):
         return (None not in params)
 
-    def _on_validated(self, params):
+    def on_validated(self, params):
         pass
 
-    def _on_invalidated(self, params):
+    def on_invalidated(self, params):
         self.set_value(None)
     

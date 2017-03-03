@@ -8,17 +8,20 @@ sys.setcheckinterval(10)
 class ProgressManager:
     """Utility Class to display Progress Bars in console.
 
+    Parameters
+    ----------
     components : array_like
         pass
 
-    min_value : float
-        pass
+    min_value : float, optional
+        Minimum value of the progress. Default is 0.
 
-    max_value : float
-        pass
+    max_value : float, optional
+        Maximum value of the progress. Default is 100.
 
     max_update_interval : float
-        pass
+        Maximum time interval between two updates of the Progress Indicator.
+        Default is 0.50s.
 
     Attributes
     ----------
@@ -46,9 +49,9 @@ class ProgressManager:
         self.components = components
         self._registered_providers = dict()
         self._loaded_providers = dict()
-        self.register_default_providers()
+        self._register_default_providers()
 
-    def register_default_providers(self):
+    def _register_default_providers(self):
         self.register_provider(RateProvider())
         self.register_provider(ETAProvider())
         self.register_provider(ETANewProvider())
@@ -61,17 +64,22 @@ class ProgressManager:
         initializing Progress Bar. If not called, first call to publish() will
         automatically call this method.
         """
-        component_update_interval = []
+        component_update_intervals = []
         for component in self.components:
             if isinstance(component, BaseExtension):
                 requirements = component.get_requirements()
-                component_update_interval.append(component._get_update_interval())
+                update_interval = component._get_update_interval()
+                if update_interval is not None:
+                    component_update_intervals.append(update_interval)
+                else:
+                    component_update_intervals.append(self.max_update_interval)
                 for requirement in requirements:
                     self._load_provider(requirement)
                 #params = [self._stats[i] for i in requirements]
                 #component._on_begin(params)
+
         try:
-            self._update_interval = min(min(component_update_interval), self.max_update_interval)
+            self._update_interval = min(min(component_update_intervals), self.max_update_interval)
         except TypeError:
             self._update_interval = self.max_update_interval
 
@@ -97,7 +105,7 @@ class ProgressManager:
             required_tags = provider.get_requirements()
             params = [self._stats[i] for i in required_tags]
             if None not in params:
-                provider._on_begin(params)
+                provider.on_begin(params)
                 #getattr(provider, '_on_{}'.format(event))(params)
                 self._stats[tag] = provider.get_value()
             else:
@@ -107,7 +115,7 @@ class ProgressManager:
             if isinstance(component, BaseExtension):
                 requirements = component.get_requirements()
                 params = [self._stats[i] for i in requirements]
-                component._on_begin(params)
+                component.on_begin(params)
 
                 
         self._update_progress_bar()
@@ -136,7 +144,7 @@ class ProgressManager:
             required_tags = provider.get_requirements()
             params = [self._stats[i] for i in required_tags]
             if None not in params:
-                provider._on_end(params)
+                provider.on_end(params)
                 #getattr(provider, '_on_{}'.format(event))(params)
                 self._stats[tag] = provider.get_value()
             else:
@@ -146,7 +154,7 @@ class ProgressManager:
             if isinstance(component, BaseExtension):
                 requirements = component.get_requirements()
                 params = [self._stats[i] for i in requirements]
-                component._on_end(params)
+                component.on_end(params)
         self._update_progress_bar()
 
         self._loaded_providers = {}
@@ -210,9 +218,16 @@ class ProgressManager:
         return True
 
         # Update if time since last update crossed max_update_interval
-        return False
 
     def register_provider(self, provider):
+        """Any custom providers needed for an extension should be registered
+        using this method.
+
+        Parameters
+        ----------
+        provider : BaseProvider
+            An instance of the Custom BaseProvider child class.
+        """
         assert isinstance(provider, BaseProvider)
         tag = provider.get_tag()
         if tag in self._registered_providers:
@@ -220,6 +235,18 @@ class ProgressManager:
         self._registered_providers[tag] = provider
 
     def deregister_provider(self, tag):
+        """All providers can be deregistered using this method.
+
+        Parameters
+        ----------
+        tag : str
+            Tag of the Provider you wish to remove.
+
+        Note
+        ----
+        For optimization purposes, You don't need to deregister providers if
+        they are not needed as Providers which are not required are never executed.
+        """
         try:
             self._registered_providers.pop(tag)
         except KeyError:
@@ -271,11 +298,11 @@ class ProgressManager:
             provider = self._loaded_providers[tag]
             required_tags = provider.get_requirements()
             params = [stats[i] for i in required_tags]
-            if None not in params:
-                provider._on_validated(params)
+            try:
+                provider.on_validated(params)
                 #getattr(provider, '_on_{}'.format(event))(params)
                 stats[tag] = provider.get_value()
-            else:
+            except TypeError:
                 stats[tag] = None
 
     def publish(self, value=None):
@@ -284,7 +311,8 @@ class ProgressManager:
         Parameters
         ----------
         value : float or int
-            The current progress in percentage. It should be between 0 and 100.
+            The current progress in percentage. It should be between
+            `min_value` and `max_value`.
         """
         #assert self._is_allowed_to_publish is True
 
@@ -296,7 +324,8 @@ class ProgressManager:
         time_since_update = time_curr - stats['last_update_time']
 
         try:
-            if ((time_since_update < self._update_interval) and ((value - stats['value']) < (0.1 * self._range))):
+            if ((time_since_update < self._update_interval)
+                    and ((value - stats['value']) < (0.1 * self._range))):
                 return
         except TypeError:
             pass
@@ -327,7 +356,7 @@ class ProgressManager:
             required_tags = provider.get_requirements()
             params = [stats[i] for i in required_tags]
             try:
-                provider._on_validated(params)
+                provider.on_validated(params)
                 #getattr(provider, '_on_{}'.format(event))(params)
                 stats[tag] = provider.get_value()
             except TypeError:
@@ -338,7 +367,7 @@ class ProgressManager:
             if isinstance(component, BaseExtension):
                 requirements = component.get_requirements()
                 params = [stats[i] for i in requirements]
-                component._on_update(params)
+                component.on_update(params)
         
         self._update_progress_bar()
         
