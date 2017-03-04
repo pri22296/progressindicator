@@ -355,11 +355,11 @@ class ProgressManager:
             provider = self._loaded_providers[tag]
             required_tags = provider.get_requirements()
             params = [stats[i] for i in required_tags]
-            try:
+            if None not in params:
                 provider.on_validated(params)
                 #getattr(provider, '_on_{}'.format(event))(params)
                 stats[tag] = provider.get_value()
-            except TypeError:
+            else:
                 stats[tag] = None
                 
 

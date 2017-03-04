@@ -132,7 +132,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         """Override this method to set the look of the extension at each update.
 
         This method is called at each update. It is recommended to override the
-        higher level functions `_on_validated` and `_on_invalidated` instead of
+        higher level functions `on_validated` and `on_invalidated` instead of
         this method.
         
         Parameters
@@ -242,23 +242,75 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         return True
 
     def on_begin(self, params):
+        """Override this method to customize the initial look of the extension.
+
+        By default, the appropriate after-validation method is called.
+
+        Parameters
+        ----------
+        params : array_like
+            Values of all keys specified in the requirements of the extension.
+        """
         self.on_publish(params)
 
     def on_publish(self, params):
+        """Override this method to calculate the value for the provider at each
+        publish.
+
+        This method is called at each update. It is recommended to override the
+        higher level functions `on_validated` and `on_invalidated` instead of
+        this method.
+        
+        Parameters
+        ----------
+        params : array_like
+            Values of all keys specified in the requirements of the extension.
+        """
         if self._validate(params):
             self.on_validated(params)
         else:
             self.on_invalidated(params)
 
     def on_end(self, params):
+        """Override this method to calculate the final value for the provider.
+
+        By default, the appropriate after-validation method is called.
+
+        Parameters
+        ----------
+        params : array_like
+            Values of all keys specified in the requirements of the extension.
+        """
         self.on_publish(params)
 
     def _validate(self, params):
         return (None not in params)
 
     def on_validated(self, params):
+        """Override this method to calculate the value for the provider at each
+        publish.
+
+        This method is only called during an update if value of all keys in
+        requirements are valid.
+        
+        Parameters
+        ----------
+        params : array_like
+            Values of all keys specified in the requirements of the extension.
+        """
         pass
 
     def on_invalidated(self, params):
+        """Override this method to calculate the value for the provider at each
+        publish.
+
+        This method is only called during an update if value for atleast one key
+        in requirements is invalid.
+        
+        Parameters
+        ----------
+        params : array_like
+            Values of all keys specified in the requirements of the extension.
+        """
         self.set_value(None)
     
