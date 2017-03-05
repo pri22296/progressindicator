@@ -9,6 +9,9 @@ Command Line Progress Indicator Library for Python 3
 Introduction
 **************************************************************************
 
+.. image:: https://travis-ci.org/pri22296/progress_manager.svg?branch=master
+    :target: https://travis-ci.org/pri22296/progress_manager
+
 This Package provides ProgressManager class for easily providing
 visual cue about the progress of a task underway. Using the concept
 of components and providers, One can easily customize the look and
@@ -41,14 +44,14 @@ Installation
 Links
 **************************************************************************
 
-.. inclusion-marker-links-end
-
 
 * `Documentation <http://progress-manager.readthedocs.io/en/latest/>`_
 
 * `Source <https://github.com/pri22296/progress_manager>`_
 
 * `API Reference <http://progress-manager.readthedocs.io/en/latest/source/progress_manager.html#module-progress_manager>`_
+
+.. inclusion-marker-links-end
 
 
 .. inclusion-marker-license-start

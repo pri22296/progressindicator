@@ -26,7 +26,7 @@ progress_manager.extensions module
 .. automodule:: progress_manager.extensions
     :members:
     :undoc-members:
-    :show-inheritance:
+    :exclude-members: on_begin, on_update, on_validated, on_invalidated, on_end
 
 progress_manager.providers module
 ---------------------------------
@@ -34,7 +34,7 @@ progress_manager.providers module
 .. automodule:: progress_manager.providers
     :members:
     :undoc-members:
-    :show-inheritance:
+    :exclude-members: on_begin, on_publish, on_validated, on_invalidated, on_end
 
 
 Module contents

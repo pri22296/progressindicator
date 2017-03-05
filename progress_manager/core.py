@@ -104,12 +104,8 @@ class ProgressManager:
             provider = self._loaded_providers[tag]
             required_tags = provider.get_requirements()
             params = [self._stats[i] for i in required_tags]
-            if None not in params:
-                provider.on_begin(params)
-                #getattr(provider, '_on_{}'.format(event))(params)
-                self._stats[tag] = provider.get_value()
-            else:
-                self._stats[tag] = None
+            provider.on_begin(params)
+            self._stats[tag] = provider.get_value()
         
         for component in self.components:
             if isinstance(component, BaseExtension):
@@ -143,12 +139,8 @@ class ProgressManager:
             provider = self._loaded_providers[tag]
             required_tags = provider.get_requirements()
             params = [self._stats[i] for i in required_tags]
-            if None not in params:
-                provider.on_end(params)
-                #getattr(provider, '_on_{}'.format(event))(params)
-                self._stats[tag] = provider.get_value()
-            else:
-                self._stats[tag] = None
+            provider.on_end(params)
+            self._stats[tag] = provider.get_value()
         
         for component in self.components:
             if isinstance(component, BaseExtension):
@@ -355,12 +347,9 @@ class ProgressManager:
             provider = self._loaded_providers[tag]
             required_tags = provider.get_requirements()
             params = [stats[i] for i in required_tags]
-            if None not in params:
-                provider.on_validated(params)
-                #getattr(provider, '_on_{}'.format(event))(params)
-                stats[tag] = provider.get_value()
-            else:
-                stats[tag] = None
+            
+            provider.on_publish(params)
+            stats[tag] = provider.get_value()
                 
 
         for component in self.components:

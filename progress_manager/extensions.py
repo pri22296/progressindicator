@@ -146,7 +146,7 @@ class Alternator(BaseExtension):
         The set of string through which the extension should loop.
     """
     def __init__(self, char_iter):
-        BaseExtension.__init__(self, requirements = [], update_interval=0.3)
+        BaseExtension.__init__(self, requirements=[], update_interval=0.3)
         self._char_iter = char_iter
         self._current_pos = 0
 
