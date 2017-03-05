@@ -10,13 +10,13 @@ import shutil
 
 term_width = shutil.get_terminal_size()
 
-"""print("Calculating bias in time.sleep()...")
+print("Calculating bias in time.sleep()...")
 st = time.time()
 for i in range(1000):
     time.sleep(0.01)
 et = time.time()
 bias = ((et - st) / 10) - 1
-print("bias = {:.2%}\n\n\n".format(bias))"""
+print("bias = {:.2%}\n\n\n".format(bias))
 
 
 def test(func):
@@ -105,13 +105,13 @@ def benchmark():
 
 def main():
     n = 1000
-    """test_generator_wrapper(n)
+    test_generator_wrapper(n)
     test_iterator_wrapper(n)
     test_decorator(n)
     test_context_manager(n)
     test_eta(n)
-    test_with_print(n)"""
-    benchmark()
+    test_with_print(n)
+    #benchmark()
 
 if __name__ == '__main__':
     main()

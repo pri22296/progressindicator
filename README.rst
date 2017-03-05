@@ -41,9 +41,14 @@ Installation
 Links
 **************************************************************************
 
-
 .. inclusion-marker-links-end
 
+
+* `Documentation <http://progress-manager.readthedocs.io/en/latest/>`_
+
+* `Source <https://github.com/pri22296/progress_manager>`_
+
+* `API Reference <http://progress-manager.readthedocs.io/en/latest/source/progress_manager.html#module-progress_manager>`_
 
 
 .. inclusion-marker-license-start
