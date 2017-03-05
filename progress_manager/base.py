@@ -8,15 +8,14 @@ import abc
 class BaseExtension(object, metaclass = abc.ABCMeta):
     """Base class for all extensions.
 
-    All extensions need to inherit from this class. Before calling any
-    method of an extension, It is explicitly checked whether it inherits
-    from this class. This class provides various methods which can be
-    overidden to achieve desired behaviour.
+    All extensions must inherit from this class. This class provides various
+    methods which can be overidden to achieve desired behaviour.
 
     Parameters
     ----------
     requirements : array_like
-        Keys whose value, the extension needs.
+        iterable of strings where each string should be a built-in tag or a tag
+        provided by a registered custom provider.
 
     update_interval : float
         Desired update interval for the extension.
@@ -39,11 +38,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         Returns
         -------
         array_like:
-            requirements of the extension.
-
-        Notes
-        -----
-        Never Override this method.
+            list of tags required by the extension.
         """
         return self._requirements
 
@@ -95,10 +90,6 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         ----------
         value : str
             Value to be set.
-
-        Notes
-        -----
-        Never Override this method.
         """
         self._value = value
 
@@ -109,10 +100,6 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         -------
         str
             value set by `set_value`
-
-        Notes
-        -----
-        Never Override this method.
         """
         return self._value
 
@@ -160,8 +147,8 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
     def on_validated(self, params):
         """Override this method to set the look of the extension at each update.
 
-        This method is only called during an update if value of all keys in
-        requirements are valid.
+        This method is only called during an update if value of all tags
+        required by the extension are valid.
         
         Parameters
         ----------
@@ -173,8 +160,8 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
     def on_invalidated(self, params):
         """Override this method to set the look of the extension at each update.
 
-        This method is only called during an update if value for atleast one key
-        in requirements is invalid.
+        This method is only called during an update if value for atleast one
+        tag required by the extension is invalid.
         
         Parameters
         ----------
@@ -197,52 +184,41 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         -------
         array_like:
             requirements of the extension.
-
-        Notes
-        -----
-        Never Override this method.
         """
         return self._requirements
 
     def get_tag(self):
-        """
-        Return the `tag` of the Provider.
+        """Return the `tag` of the Provider.
+
+        Returns
+        -------
+        str:
+            `tag` of the provider.
         """
         return self._tag
 
     def set_value(self, value):
-        """This method sets the content which is to be printed to console.
+        """This method sets the value of the tag provided by the provider.
 
         Parameters
         ----------
         value : str
             Value to be set.
-
-        Notes
-        -----
-        Never Override this method.
         """
         self._value = value
 
     def get_value(self):
-        """Get the current value to be printed to console.
+        """Get the current value of the provider's tag.
 
         Returns
         -------
         str
             value set by `set_value`
-
-        Notes
-        -----
-        Never Override this method.
         """
         return self._value
 
-    def _is_update_required(self):
-        return True
-
     def on_begin(self, params):
-        """Override this method to customize the initial look of the extension.
+        """Override this method to set the initial value for the provider.
 
         By default, the appropriate after-validation method is called.
 
@@ -257,14 +233,14 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         """Override this method to calculate the value for the provider at each
         publish.
 
-        This method is called at each update. It is recommended to override the
+        This method is called on every publish. It is recommended to override the
         higher level functions `on_validated` and `on_invalidated` instead of
         this method.
         
         Parameters
         ----------
         params : array_like
-            Values of all keys specified in the requirements of the extension.
+            Values of all tags specified in the requirements of the extension.
         """
         if self._validate(params):
             self.on_validated(params)
@@ -279,7 +255,7 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         Parameters
         ----------
         params : array_like
-            Values of all keys specified in the requirements of the extension.
+            Values of all tags specified in the requirements of the extension.
         """
         self.on_publish(params)
 
