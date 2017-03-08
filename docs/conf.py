@@ -62,6 +62,12 @@ master_doc = 'index'
 project = 'progress_manager'
 copyright = '2017, Priyam Singh'
 author = 'Priyam Singh'
+description = 'Command line Progress Bar library for python 3.'
+
+# Use |project| is rst files to refer to Name of Project
+rst_epilog = """
+.. |project| replace:: {}
+""".format(project)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -140,8 +146,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'progress_manager.tex', 'progress\\_manager Documentation',
-     'Priyam Singh', 'manual'),
+    (master_doc, '{}.tex'.format(project), '{} Documentation'.format(project),
+     author, 'manual'),
 ]
 
 
@@ -150,7 +156,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'progress_manager', 'progress_manager Documentation',
+    (master_doc, project, '{} Documentation'.format(project),
      [author], 1)
 ]
 
@@ -161,8 +167,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'progress_manager', 'progress_manager Documentation',
-     author, 'progress_manager', 'One line description of project.',
+    (master_doc, project, '{} Documentation'.format(project),
+     author, project, description,
      'Miscellaneous'),
 ]
 
