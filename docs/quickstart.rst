@@ -97,15 +97,15 @@ customize the look of the ProgressBar, you can do so via :mod:`~.extensions`.
 Building The ProgressBar
 -------------------------------------------------------------------------
 
-:class:`.ProgressManager` takes a parameter named components which is an
+:class:`.ProgressIndicator` takes a parameter named components which is an
 iterable of string or extensions. Using this, you can customize the look
 of your progress bar as per your wish. 
 
 .. code:: python
 
-   from progress_manager.core import ProgressManager
-   from progress_manager.extensions import Percentage, Bar
-   bar = ProgressManager(components=[Bar(), "Progress =", Percentage()])
+   from progressindicator.core import ProgressIndicator
+   from progressindicator.extensions import Percentage, Bar
+   bar = ProgressIndicator(components=[Bar(), "Progress =", Percentage()])
 
 -------------------------------------------------------------------------
 Built-in Extensions
@@ -182,5 +182,5 @@ Also the :meth:`~.BaseProvider.__init__` method does not take ``update_interval`
 as a parameter, Instead it takes a parameter ``tag`` which takes a string.
 Rest of api is same. The tag should not collide with any built-in tag.
 Prior to using a provider you need to register it. To register,
-just call the :meth:`~.ProgressManager.register_provider` method of the
-`ProgressManager` class and pass it an instance of your provider.
+just call the :meth:`~.ProgressIndicator.register_provider` method of the
+`ProgressIndicator` class and pass it an instance of your provider.

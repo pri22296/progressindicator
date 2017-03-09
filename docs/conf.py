@@ -59,7 +59,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'progress_manager'
+project = 'progressindicator'
 copyright = '2017, Priyam Singh'
 author = 'Priyam Singh'
 description = 'Command line Progress Bar library for python 3.'

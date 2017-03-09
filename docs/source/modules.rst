@@ -1,7 +1,7 @@
-progress_manager
-================
+progressindicator
+=================
 
 .. toctree::
    :maxdepth: 4
 
-   progress_manager
+   progressindicator

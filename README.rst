@@ -12,7 +12,7 @@ Introduction
 .. image:: https://travis-ci.org/pri22296/progress_manager.svg?branch=master
     :target: https://travis-ci.org/pri22296/progress_manager
 
-This Package provides ProgressManager class for easily providing
+This Package provides ProgressIndicator class for easily providing
 visual cue about the progress of a task underway. Using the concept
 of components and providers, One can easily customize the look and
 feel of the Progress Indicator.
@@ -45,11 +45,11 @@ Links
 **************************************************************************
 
 
-* `Documentation <http://progress-manager.readthedocs.io/en/latest/>`_
+* `Documentation <http://progressindicator.readthedocs.io/en/latest/>`_
 
-* `Source <https://github.com/pri22296/progress_manager>`_
+* `Source <https://github.com/pri22296/progressindicator>`_
 
-* `API Reference <http://progress-manager.readthedocs.io/en/latest/source/progress_manager.html#module-progress_manager>`_
+* `API Reference <http://progressindicator.readthedocs.io/en/latest/source/progressindicator.html#module-progressindicator>`_
 
 .. inclusion-marker-links-end
 
@@ -60,7 +60,7 @@ Links
 License
 **************************************************************************
 
-This project is licensed under the MIT License - see the `LICENSE.txt <https://github.com/pri22296/progress_manager/blob/master/LICENSE.txt>`_ file for details.
+This project is licensed under the MIT License - see the `LICENSE.txt <https://github.com/pri22296/progressindicator/blob/master/LICENSE.txt>`_ file for details.
 
 
 .. inclusion-marker-license-end

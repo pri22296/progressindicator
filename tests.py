@@ -1,7 +1,7 @@
-from progress_manager.core import (SimpleProgressBar, AdvancedProgressBar,
-                                   ProgressManager, display_progress)
+from progressindicator.core import (SimpleProgressBar, AdvancedProgressBar,
+                                   ProgressIndicator, display_progress)
 
-from progress_manager.extensions import (Percentage, Rate, ETA, ETANew, Bar,
+from progressindicator.extensions import (Percentage, Rate, ETA, ETANew, Bar,
                                          BouncingBar, Ellipses, Timer)
 
 import time

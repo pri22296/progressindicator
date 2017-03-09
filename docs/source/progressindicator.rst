@@ -1,37 +1,37 @@
-progress_manager package
-========================
+progressindicator package
+=========================
 
 Submodules
 ----------
 
-progress_manager.base module
+progressindicator.base module
 ----------------------------
 
-.. automodule:: progress_manager.base
+.. automodule:: progressindicator.base
     :members:
     :undoc-members:
     :show-inheritance:
 
-progress_manager.core module
+progressindicator.core module
 ----------------------------
 
-.. automodule:: progress_manager.core
+.. automodule:: progressindicator.core
     :members:
     :undoc-members:
     :show-inheritance:
 
-progress_manager.extensions module
+progressindicator.extensions module
 ----------------------------------
 
-.. automodule:: progress_manager.extensions
+.. automodule:: progressindicator.extensions
     :members:
     :undoc-members:
     :exclude-members: on_begin, on_update, on_validated, on_invalidated, on_end
 
-progress_manager.providers module
+progressindicator.providers module
 ---------------------------------
 
-.. automodule:: progress_manager.providers
+.. automodule:: progressindicator.providers
     :members:
     :undoc-members:
     :exclude-members: on_begin, on_publish, on_validated, on_invalidated, on_end
@@ -40,7 +40,7 @@ progress_manager.providers module
 Module contents
 ---------------
 
-.. automodule:: progress_manager
+.. automodule:: progressindicator
     :members:
     :undoc-members:
     :show-inheritance:

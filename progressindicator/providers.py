@@ -1,4 +1,4 @@
-from progress_manager.base import BaseProvider
+from progressindicator.base import BaseProvider
 import time
 
 class ETAProvider(BaseProvider):

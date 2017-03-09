@@ -1,11 +1,11 @@
 import time
-from progress_manager.base import BaseExtension, BaseProvider
+from progressindicator.base import BaseExtension, BaseProvider
 import sys
-from progress_manager.providers import *
+from progressindicator.providers import *
 sys.setcheckinterval(10)
 
 
-class ProgressManager:
+class ProgressIndicator:
     """Utility Class to display Progress Bars in console.
 
     Parameters
@@ -59,7 +59,7 @@ class ProgressManager:
     def begin(self):
         """Performs initial tasks prior to printing progress bar.
 
-        It is recommended to perform all customization to the ProgressManager
+        It is recommended to perform all customization to the ProgressIndicator
         instance before calling this method. This method should be called for
         initializing Progress Bar. If not called, first call to publish() will
         automatically call this method.
@@ -389,7 +389,7 @@ class ProgressManager:
         self._printed_char_num = len(progress_bar)
 
     def _clear_progress_bar(self):
-        """Clears printed characters by `ProgressManager` instance."""
+        """Clears printed characters by `ProgressIndicator` instance."""
         self._print_if_allowed(' ' * self._printed_char_num,
                                end='\r',
                                file=self.stream,
@@ -397,26 +397,26 @@ class ProgressManager:
         self._printed_char_num = 0
 
     def allow_to_print(self, is_allowed_to_print: bool):
-        """Set whether ProgressManager instance is allowed to print to console.
+        """Set whether ProgressIndicator instance is allowed to print to console.
 
         Parameters
         ----------
 
         is_allowed_to_print
-            Whether ProgressManager instance has permission to print.
+            Whether ProgressIndicator instance has permission to print.
         """
         self._is_allowed_to_print = is_allowed_to_print
 
 
 
-class SimpleProgressBar(ProgressManager):
+class SimpleProgressBar(ProgressIndicator):
     def __init__(self):
-        from progress_manager.extensions import Percentage, Timer, ETANew, Rate, Bar
+        from progressindicator.extensions import Percentage, Timer, ETANew, Rate, Bar
         super().__init__(components = [Percentage(), Bar()])
 
-class AdvancedProgressBar(ProgressManager):
+class AdvancedProgressBar(ProgressIndicator):
     def __init__(self):
-        from progress_manager.extensions import Percentage, Timer, ETA, ETANew, Rate, Bar
+        from progressindicator.extensions import Percentage, Timer, ETA, ETANew, Rate, Bar
         super().__init__(components = [Percentage(), Bar(), Rate(), Timer(), ETA(), ETANew()])
 
 def display_progress(bar):

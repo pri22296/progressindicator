@@ -14,7 +14,7 @@ cp -Rf _build/html $HOME/docs
 cd $HOME
 git config --global user.email "travis@travis-ci.org"
 git config --global user.name "travis-ci"
-git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/pri22296/progress_manager gh-pages > /dev/null
+git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/pri22296/progressindicator gh-pages > /dev/null
 
 cd gh-pages
 git rm -rf ./*

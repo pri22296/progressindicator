@@ -1,8 +1,8 @@
-"""This module contains the BaseExtensions for progress_manager."""
-from progress_manager.base import BaseExtension
+"""This module contains the Built-in Extensions for ProgressIndicator class."""
+from progressindicator.base import BaseExtension
 
 class Bar(BaseExtension):
-    """Extension to display ProgressBar in console.
+    """Extension to display Progress bar in console.
 
     Parameters
     ----------
