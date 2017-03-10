@@ -1,9 +1,9 @@
 import time
 from progressindicator.base import BaseExtension, BaseProvider
+from progressindicator.tags import *
 import sys
 from progressindicator.providers import *
 sys.setcheckinterval(10)
-
 
 class ProgressIndicator:
     """Utility Class to display Progress Bars in console.
@@ -27,6 +27,21 @@ class ProgressIndicator:
     ----------
     clear_on_task_completion : bool
         Whether Progress Bar is cleared on calling `end`.
+        
+    min_value : int, float
+        Minimum value of the progress.
+        
+    max_value : int, float
+        Maximum value of the progress
+
+    max_update_interval : float
+        Maximum interval in seconds between succesive updates
+
+    seperator : str
+        String used to join output of components.(Default ' ')
+
+    components : list
+        List of components used to build the progress bar.
     """
     
     def __init__(self, components, min_value=0, max_value=100,
@@ -36,19 +51,21 @@ class ProgressIndicator:
             raise TypeError("'components' must be iterable")
         self._is_allowed_to_print = True
         self._is_allowed_to_publish = False
-        self.clear_on_task_completion = True
         self._stats = dict()
-        self.seperator = ' '
         if min_value > max_value:
             raise ValueError("min_value should be less than max_value")
+        self._printed_char_num = 0
+        self._registered_providers = dict()
+        self._loaded_providers = dict()
+        
+        self.seperator = ' '
         self.min_value = min_value
         self.max_value = max_value
         self.stream = stream
         self.max_update_interval = max_update_interval
-        self._printed_char_num = 0
+        self.clear_on_task_completion = True
         self.components = components
-        self._registered_providers = dict()
-        self._loaded_providers = dict()
+        
         self._register_default_providers()
 
     def _register_default_providers(self):
@@ -85,15 +102,17 @@ class ProgressIndicator:
 
         #self._load_provider('begin_time')
         #self._load_provider('end_time')
-        self._stats['value'] = None
-        self._stats['max_value'] = self.max_value
-        self._stats['min_value'] = self.min_value
-        self._stats['begin_time'] = time.time()
-        self._stats['end_time'] = None
-        self._stats['iterations'] = 0
-        self._stats['percentage'] = 0
-        self._stats['time_since_begin'] = 0
-        self._stats['deltatime'] = 0
+        self._stats[TAG_VALUE] = None
+        self._stats[TAG_MAX_VALUE] = self.max_value
+        self._stats[TAG_MIN_VALUE] = self.min_value
+        self._stats[TAG_BEGIN_TIME] = time.time()
+        self._stats[TAG_END_TIME] = None
+        self._stats[TAG_ITERATIONS] = 0
+        self._stats[TAG_PERCENTAGE] = 0
+        self._stats[TAG_TIME_SINCE_BEGIN] = 0
+        self._stats[TAG_DELTATIME] = 0
+        self._stats[TAG_LAST_UPDATED_AT] = None
+        self._stats[TAG_TIME_SINCE_UPDATE] = None
 
         self._range = self.max_value - self.min_value
         
@@ -127,12 +146,12 @@ class ProgressIndicator:
         clear_on_task_completion is True. The console should support
         printing carriage returns.
         """
-        self._stats['value'] = self.max_value
-        self._stats['max_value'] = self.max_value
-        self._stats['min_value'] = self.min_value
-        self._stats['end_time'] = time.time()
-        self._stats['percentage'] = 100
-        self._stats['time_since_begin'] = time.time() - self._stats['begin_time']
+        self._stats[TAG_VALUE] = self.max_value
+        self._stats[TAG_MAX_VALUE] = self.max_value
+        self._stats[TAG_MIN_VALUE] = self.min_value
+        self._stats[TAG_END_TIME] = time.time()
+        self._stats[TAG_PERCENTAGE] = 100
+        self._stats[TAG_TIME_SINCE_BEGIN] = time.time() - self._stats[TAG_BEGIN_TIME]
         
         #self._update_stats('end')
         for tag in self._ordered_providers_tags:
@@ -158,7 +177,7 @@ class ProgressIndicator:
     def __next__(self):
         try:
             value = next(self.iterator)
-            if self._stats.get('begin_time', None) is None:
+            if self._stats.get(TAG_BEGIN_TIME, None) is None:
                 self.begin()
             else:
                 self.publish(value)
@@ -192,18 +211,18 @@ class ProgressIndicator:
             print(*args, **kwargs)
 
     def _time_since_last_update(self):
-        return (self._stats['time_since_begin']
-                - self._stats_at_last_update['time_since_begin'])
+        return (self._stats[TAG_TIME_SINCE_BEGIN]
+                - self._stats_at_last_update[TAG_TIME_SINCE_BEGIN])
 
     def _is_update_required(self, value)-> bool:
 
         stats = self._stats
-        time_since_update = stats['time_since_update']
+        time_since_update = stats[TAG_TIME_SINCE_UPDATE]
         if time_since_update < self.min_update_interval:
             return False
         if time_since_update < self._update_interval:
             try:
-                if 100 * (value - stats['value']) / (self.max_value - self.min_value) < 20:
+                if 100 * (value - stats[TAG_VALUE]) / (self.max_value - self.min_value) < 20:
                     return False
             except TypeError:
                 return False
@@ -311,21 +330,21 @@ class ProgressIndicator:
 
         time_curr = time.time()
         stats = self._stats
-        stats['iterations'] += 1
+        stats[TAG_ITERATIONS] += 1
         
-        time_since_update = time_curr - stats['last_update_time']
+        time_since_update = time_curr - stats[TAG_LAST_UPDATED_AT]
 
         try:
             if ((time_since_update < self._update_interval)
-                    and ((value - stats['value']) < (0.1 * self._range))):
+                    and ((value - stats[TAG_VALUE]) < (0.1 * self._range))):
                 return
         except TypeError:
             pass
 
-        stats['time_since_update'] = time_since_update
-        time_ = stats['time_since_begin']
-        stats['time_since_begin'] = time_curr - self._stats['begin_time']
-        stats['deltatime'] = self._stats['time_since_begin'] - time_
+        stats[TAG_TIME_SINCE_UPDATE] = time_since_update
+        time_ = stats[TAG_TIME_SINCE_BEGIN]
+        stats[TAG_TIME_SINCE_BEGIN] = time_curr - self._stats[TAG_BEGIN_TIME]
+        stats[TAG_DELTATIME] = self._stats[TAG_TIME_SINCE_BEGIN] - time_
 
         if value is not None:
             if self.min_value <= value <= self.max_value:
@@ -335,13 +354,13 @@ class ProgressIndicator:
                     "'value' must be between {} and {}".format(
                         self.min_value, self.max_value))
         
-        stats['value'] = value
-        stats['max_value'] = self.max_value
-        stats['min_value'] = self.min_value
+        stats[TAG_VALUE] = value
+        stats[TAG_MAX_VALUE] = self.max_value
+        stats[TAG_MIN_VALUE] = self.min_value
         try:
-            stats['percentage'] = 100 * (value - self.min_value) / (self.max_value - self.min_value)
+            stats[TAG_PERCENTAGE] = 100 * (value - self.min_value) / (self.max_value - self.min_value)
         except (TypeError, ZeroDivisionError):
-            stats['percentage'] = None
+            stats[TAG_PERCENTAGE] = None
         
         for tag in self._ordered_providers_tags:
             provider = self._loaded_providers[tag]
@@ -364,7 +383,7 @@ class ProgressIndicator:
     def _update_progress_bar(self):
         """Updates Progress Bar."""
         #self._stats_at_last_update = self._stats.copy()
-        self._stats['last_update_time'] = time.time()
+        self._stats[TAG_LAST_UPDATED_AT] = time.time()
         result = []
         for component in self.components:
             if isinstance(component, BaseExtension):

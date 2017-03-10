@@ -1,5 +1,6 @@
 """This module contains the Built-in Extensions for ProgressIndicator class."""
 from progressindicator.base import BaseExtension
+from progressindicator.tags import *
 
 class Bar(BaseExtension):
     """Extension to display Progress bar in console.
@@ -23,7 +24,7 @@ class Bar(BaseExtension):
     """
     def __init__(self, length=60, begin_entity='[', filler_entity='#',
                  empty_entity=' ', end_entity=']'):
-        BaseExtension.__init__(self, requirements = ['percentage'])
+        BaseExtension.__init__(self, requirements = [TAG_PERCENTAGE])
         self.length = length
         self.begin_entity = begin_entity
         self.filler_entity = filler_entity
@@ -82,8 +83,8 @@ class BouncingBar(BaseExtension):
     def __init__(self, length=60, begin_entity='[', filler_entity='*',
                  empty_entity=' ', end_entity=']', velocity=200):
         BaseExtension.__init__(self,
-                               requirements = ['time_since_begin',
-                                               'deltatime'],
+                               requirements = [TAG_TIME_SINCE_BEGIN,
+                                               TAG_DELTATIME],
                                update_interval=0.1)
         self.length = length
         self.filler = filler_entity
@@ -182,7 +183,7 @@ class Timer(BaseExtension):
     """This Extension provides total time since the task was started.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = ['time_since_begin'])
+        BaseExtension.__init__(self, requirements = [TAG_TIME_SINCE_BEGIN])
 
     def on_validated(self, params):
         time_ = params[0]
@@ -201,7 +202,7 @@ class ETA(Timer):
     completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = ['eta'])
+        BaseExtension.__init__(self, requirements = [TAG_ETA])
 
 
 class ETANew(Timer):
@@ -209,14 +210,14 @@ class ETANew(Timer):
     to be completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = ['eta_new'])
+        BaseExtension.__init__(self, requirements = [TAG_ETA_NEW])
 
 
 class Rate(BaseExtension):
     """This Extension displays the rate at which calls to `publish` are made.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = ['rate'])
+        BaseExtension.__init__(self, requirements = [TAG_RATE])
 
     def on_validated(self, params):
         rate = params[0]
@@ -230,7 +231,7 @@ class Percentage(BaseExtension):
     """This Extension displays percentage of the task completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = ['percentage'])
+        BaseExtension.__init__(self, requirements = [TAG_PERCENTAGE])
 
     def on_validated(self, params):
         percentage = params[0]

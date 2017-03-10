@@ -1,7 +1,4 @@
-"""This module contains the BaseExtension class which Base class for all extensions.
-
-
-"""
+"""This module contains the BaseExtension and BaseProvider class."""
 import abc
 
 

@@ -1,4 +1,5 @@
 from progressindicator.base import BaseProvider
+from progressindicator.tags import *
 import time
 
 class ETAProvider(BaseProvider):
@@ -8,9 +9,9 @@ class ETAProvider(BaseProvider):
     """
     def __init__(self):
         BaseProvider.__init__(self,
-                              requirements=['time_since_begin',
-                                            'percentage'],
-                              tag='eta')
+                              tag=TAG_ETA,
+                              requirements=[TAG_TIME_SINCE_BEGIN,
+                                            TAG_PERCENTAGE])
 
     def on_validated(self, params):
         try:
@@ -27,10 +28,10 @@ class ETANewProvider(BaseProvider):
     """
     def __init__(self):
         BaseProvider.__init__(self,
-                              requirements=['iterations',
-                                            'percentage',
-                                            'rate'],
-                              tag='eta_new')
+                              tag=TAG_ETA_NEW,
+                              requirements=[TAG_ITERATIONS,
+                                            TAG_PERCENTAGE,
+                                            TAG_RATE])
 
     def on_validated(self, params):
         try:
@@ -49,8 +50,8 @@ class RateProvider(BaseProvider):
     """
     def __init__(self):
         BaseProvider.__init__(self,
-                              requirements=['iterations',],
-                              tag='rate')
+                              tag=TAG_RATE,
+                              requirements=[TAG_ITERATIONS])
         self.time_prev = time.time()
         #self.value_start = 0
         self.value_prev = 0
