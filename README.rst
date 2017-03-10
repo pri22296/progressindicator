@@ -9,8 +9,12 @@ Command Line Progress Indicator Library for Python 3
 Introduction
 **************************************************************************
 
-.. image:: https://travis-ci.org/pri22296/progress_manager.svg?branch=master
-    :target: https://travis-ci.org/pri22296/progress_manager
+.. image:: https://travis-ci.org/pri22296/progressindicator.svg?branch=master
+    :target: https://travis-ci.org/pri22296/progressindicator
+    
+.. image:: https://readthedocs.org/projects/progressindicator/badge/?version=latest
+    :alt: Documentation Status
+    :target: http://progressindicator.readthedocs.io/en/latest/?badge=latest
 
 This Package provides ProgressIndicator class for easily providing
 visual cue about the progress of a task underway. Using the concept
