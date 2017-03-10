@@ -135,22 +135,24 @@ always create your own extensions by subclassing
 in the API Reference.
 
 Every extension should call the :meth:`~.BaseExtension.__init__` method
-of the `BaseExtension` class by passing a list of strings as
-``requirements``. The strings which can be passed are known as tags.
-Following is the list of all supported tags.
+of the `BaseExtension` class by passing a list of ``tags`` as
+``requirements``. These tags are basically a string.
+Following is the list of all built-in tags.
 
-* value
-* max_value
-* min_value
-* begin_time
-* end_time
-* iterations
-* percentage
-* time_since_begin
-* time_since_update
-* deltatime
-* eta
-* rate
+* :data:`~.tags.TAG_VALUE`
+* :data:`~.tags.TAG_MIN_VALUE`
+* :data:`~.tags.TAG_MAX_VALUE`
+* :data:`~.tags.TAG_BEGIN_TIME`
+* :data:`~.tags.TAG_END_TIME`
+* :data:`~.tags.TAG_ITERATIONS`
+* :data:`~.tags.TAG_PERCENTAGE`
+* :data:`~.tags.TAG_TIME_SINCE_BEGIN`
+* :data:`~.tags.TAG_DELTATIME`
+* :data:`~.tags.TAG_LAST_UPDATED_AT`
+* :data:`~.tags.TAG_TIME_SINCE_UPDATE`
+* :data:`~.tags.TAG_ETA`
+* :data:`~.tags.TAG_ETA_NEW`
+* :data:`~.tags.TAG_RATE`
 
 You can then override several event methods of
 :class:`~.BaseExtension`, such as :meth:`~.BaseExtension.on_begin`,
@@ -167,6 +169,30 @@ longer be called unless you call them explicitly. In general, you should use
 for most of the purposes. 
 To set the string that is to be displayed by your extension, just call
 the :meth:`~.BaseExtension.set_value` method from your extension.
+
+Let's write our own extension which prints nice messages to the screen
+depending on the percentage of the task completed.
+
+.. code:: python
+
+   class MyExtension(BaseExtension):
+       def __init__(self):
+           BaseExtension.__init__(self, requirements=[TAG_PERCENTAGE])
+           
+       def on_begin(self, params):
+           self.set_value("Task has begun")
+           
+       def on_validated(self, params):
+           if params[0] > 50 and params[0] < 90:
+               self.set_value("Task is half completed")
+           elif params[0] > 90:
+               self.set_value("Task is almost completed")
+               
+       def on_end(self, params):
+           self.set_value("Task is finished")
+
+As you can see how easy it is to create your own extension to customize
+the look of the Progress indicator according to your needs.
 
 -------------------------------------------------------------------------
 Writing your own Providers

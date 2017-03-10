@@ -4,6 +4,9 @@ from progressindicator.core import (SimpleProgressBar, AdvancedProgressBar,
 from progressindicator.extensions import (Percentage, Rate, ETA, ETANew, Bar,
                                          BouncingBar, Ellipses, Timer)
 
+from progressindicator.base import BaseExtension
+from progressindicator.tags import *
+
 import time
 import functools
 import shutil
@@ -85,6 +88,16 @@ def test_eta(n):
     return ((n/10) * 0.02) + ((7*n/10) * 0.01) + ((n/5) * 0.1)
 
 @test
+def test_myextension(n):
+    bar = ProgressIndicator(components=[Percentage(), MyExtension()])
+    bar.begin()
+    for i in range(n):
+        bar.publish(100*(i+1)/n)
+        time.sleep(0.01)
+    bar.end()
+    return n/100
+
+@test
 def test_with_print(n):
     bar = AdvancedProgressBar()
     bar.begin()
@@ -103,6 +116,23 @@ def benchmark():
     for s in stmts:
         print(timeit.timeit(stmt=s, number=1))
 
+
+class MyExtension(BaseExtension):
+   def __init__(self):
+       BaseExtension.__init__(self, requirements=[TAG_PERCENTAGE])
+       
+   def on_begin(self, params):
+       self.set_value("Task has begun")
+       
+   def on_validated(self, params):
+       if params[0] > 50 and params[0] < 90:
+           self.set_value("Task is half completed")
+       elif params[0] > 90:
+           self.set_value("Task is almost completed")
+           
+   def on_end(self, params):
+       self.set_value("Task is finished")
+
 def main():
     n = 1000
     test_generator_wrapper(n)
@@ -111,6 +141,7 @@ def main():
     test_context_manager(n)
     test_eta(n)
     test_with_print(n)
+    test_myextension(n)
     #benchmark()
 
 if __name__ == '__main__':

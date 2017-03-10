@@ -5,7 +5,7 @@ Submodules
 ----------
 
 progressindicator.base module
-----------------------------
+-----------------------------
 
 .. automodule:: progressindicator.base
     :members:
@@ -13,7 +13,7 @@ progressindicator.base module
     :show-inheritance:
 
 progressindicator.core module
-----------------------------
+-----------------------------
 
 .. automodule:: progressindicator.core
     :members:
@@ -21,7 +21,7 @@ progressindicator.core module
     :show-inheritance:
 
 progressindicator.extensions module
-----------------------------------
+-----------------------------------
 
 .. automodule:: progressindicator.extensions
     :members:
@@ -29,12 +29,20 @@ progressindicator.extensions module
     :exclude-members: on_begin, on_update, on_validated, on_invalidated, on_end
 
 progressindicator.providers module
----------------------------------
+----------------------------------
 
 .. automodule:: progressindicator.providers
     :members:
     :undoc-members:
     :exclude-members: on_begin, on_publish, on_validated, on_invalidated, on_end
+    
+progressindicator.tags module
+-----------------------------
+
+.. automodule:: progressindicator.tags
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 
 Module contents
