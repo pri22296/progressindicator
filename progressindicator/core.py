@@ -389,12 +389,12 @@ class ProgressIndicator:
             if isinstance(component, BaseExtension):
                 value = component.get_value()
                 if not isinstance(value, str):
-                    raise TypeError("{} instance's 'get_value' method returned {}, expected 'str'".format(type(item).__name__, type(item_str)))
+                    raise TypeError("{} instance's 'get_value' method returned {}, expected 'str'".format(type(component).__name__, type(value)))
                 result.append(value)
             elif isinstance(component, str):
                 result.append(component)
             else:
-                raise ValueError("component was of type {}, expected 'str' or an extension".format(type(item).__name__))
+                raise ValueError("component was of type {}, expected 'str' or an extension".format(type(component).__name__))
 
         progress_bar = self.seperator.join(result)
         # Overwrite previous printed content

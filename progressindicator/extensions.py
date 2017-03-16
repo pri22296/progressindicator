@@ -114,7 +114,7 @@ class BouncingBar(BaseExtension):
         self.set_value(self._get_bar(self.position))
 
     def on_invalidated(self, params):
-        _on_validated(params)
+        on_validated(params)
 
     def on_end(self, params):
         self.position = self.length - 1
