@@ -38,6 +38,10 @@ Features include:
 Installation
 **************************************************************************
 
+::
+
+    pip install progressindicator
+
 
 .. inclusion-marker-install-end
 
