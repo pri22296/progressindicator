@@ -334,12 +334,12 @@ class ProgressIndicator:
         
         time_since_update = time_curr - stats[TAG_LAST_UPDATED_AT]
 
-        try:
-            if ((time_since_update < self._update_interval)
-                    and ((value - stats[TAG_VALUE]) < (0.1 * self._range))):
+        if time_since_update < self._update_interval:
+            try:
+                if (value - stats[TAG_VALUE]) < (0.1 * self._range):
+                    return
+            except TypeError:
                 return
-        except TypeError:
-            pass
 
         stats[TAG_TIME_SINCE_UPDATE] = time_since_update
         time_ = stats[TAG_TIME_SINCE_BEGIN]
