@@ -160,7 +160,7 @@ class Spinner(Alternator):
     progress. It displays a rotating marker to indicate progress of a task.
     """
     def __init__(self):
-        super.__init__(['\\', '|', '/', '-'])
+        super().__init__(['\\', '|', '/', '-'])
 
 class Loader(Alternator):
     """This Extension displays a visual cue for a task with indeterminate
@@ -176,7 +176,7 @@ class Loader(Alternator):
     """
     def __init__(self, char='.', n=3):
         char_iter = [char*i for i in range(n+1)]
-        super.__init__(char_iter)
+        super().__init__(char_iter)
         
 
 class Timer(BaseExtension):

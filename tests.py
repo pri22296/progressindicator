@@ -2,7 +2,8 @@ from progressindicator.core import (SimpleProgressBar, AdvancedProgressBar,
                                    ProgressIndicator, display_progress)
 
 from progressindicator.extensions import (Percentage, Rate, ETA, ETANew, Bar,
-                                         BouncingBar, Ellipses, Timer)
+                                         BouncingBar, Ellipses, Timer, Spinner,
+                                          Loader)
 
 from progressindicator.base import BaseExtension
 from progressindicator.tags import *
@@ -98,6 +99,36 @@ def test_myextension(n):
     return n/100
 
 @test
+def test_extension_spinner(n):
+    bar = ProgressIndicator(components=[Spinner()])
+    bar.begin()
+    for i in range(n):
+        bar.publish()
+        time.sleep(0.01)
+    bar.end()
+    return n/100
+
+@test
+def test_extension_ellipses(n):
+    bar = ProgressIndicator(components=[Ellipses()])
+    bar.begin()
+    for i in range(n):
+        bar.publish()
+        time.sleep(0.01)
+    bar.end()
+    return n/100
+
+@test
+def test_extension_loader(n):
+    bar = ProgressIndicator(components=[Loader()])
+    bar.begin()
+    for i in range(n):
+        bar.publish()
+        time.sleep(0.01)
+    bar.end()
+    return n/100
+
+@test
 def test_with_print(n):
     bar = AdvancedProgressBar()
     bar.begin()
@@ -142,6 +173,9 @@ def main():
     test_eta(n)
     test_with_print(n)
     test_myextension(n)
+    test_extension_spinner(n)
+    test_extension_ellipses(n)
+    test_extension_loader(n)
     #benchmark()
 
 if __name__ == '__main__':
