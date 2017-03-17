@@ -21,14 +21,14 @@ class ETAProvider(BaseProvider):
             pass
             
 
-class ETANewProvider(BaseProvider):
+class ETA1Provider(BaseProvider):
     """Default Provider for an alternate estimate of the time remaining for the
     completion of the task underway. The tag for this provider is `eta_new`.
     This provider is used by the built-in `ETANew` extension.
     """
     def __init__(self):
         BaseProvider.__init__(self,
-                              tag=TAG_ETA_NEW,
+                              tag=TAG_ETA1,
                               requirements=[TAG_ITERATIONS,
                                             TAG_PERCENTAGE,
                                             TAG_RATE])

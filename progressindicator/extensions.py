@@ -120,23 +120,6 @@ class BouncingBar(BaseExtension):
         self.position = self.length - 1
         self.set_value(self._get_bar(self.position))
 
-class Ellipses(BaseExtension):
-    """This Extension displays a visual cue for a task with indeterminate
-    progress.
-    """
-    def __init__(self):
-        BaseExtension.__init__(self, requirements = [], update_interval=0.3)
-        self._char = '.'
-        self._total_char_count = 3
-        self._current_count = 0
-
-    def on_update(self, params):
-        self._current_count = (self._current_count + 1) % (self._total_char_count + 1)
-        self.set_value(self._char * self._current_count)
-
-    def on_end(self, params):
-        self.set_value(self._char * self._total_char_count + 'Done')
-
 class Alternator(BaseExtension):
     """This Extension displays items from a List in a sequential order
     in a loop after every a fixed time interval.
@@ -205,12 +188,12 @@ class ETA(Timer):
         BaseExtension.__init__(self, requirements = [TAG_ETA])
 
 
-class ETANew(Timer):
+class ETA1(Timer):
     """This Extension displays an alternate expected time left for the task
     to be completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_ETA_NEW])
+        BaseExtension.__init__(self, requirements = [TAG_ETA1])
 
 
 class Rate(BaseExtension):

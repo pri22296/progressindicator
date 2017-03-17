@@ -73,5 +73,5 @@ TAG_TIME_SINCE_UPDATE = 'time_since_update'
 
 #Tags for built-in providers
 TAG_ETA = 'eta'
-TAG_ETA_NEW = 'eta_new'
+TAG_ETA1 = 'eta1'
 TAG_RATE = 'rate'

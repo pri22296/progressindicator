@@ -1,8 +1,8 @@
 from progressindicator.core import (SimpleProgressBar, AdvancedProgressBar,
                                    ProgressIndicator, display_progress)
 
-from progressindicator.extensions import (Percentage, Rate, ETA, ETANew, Bar,
-                                         BouncingBar, Ellipses, Timer, Spinner,
+from progressindicator.extensions import (Percentage, Rate, ETA, ETA1, Bar,
+                                         BouncingBar, Timer, Spinner,
                                           Loader)
 
 from progressindicator.base import BaseExtension
@@ -73,9 +73,7 @@ def test_context_manager(n):
             bar.publish(100*(i+1)/n)
     return n/100
 
-@test
-def test_eta(n):
-    bar = AdvancedProgressBar()
+def eta_test_helper(bar, n):
     bar.begin()
     for i in range(n):
         if i < n/10:
@@ -87,6 +85,16 @@ def test_eta(n):
         bar.publish(100*(i + 1)/n)
     bar.end()
     return ((n/10) * 0.02) + ((7*n/10) * 0.01) + ((n/5) * 0.1)
+
+@test
+def test_eta(n):
+    bar = ProgressIndicator(components=[ETA()])
+    return eta_test_helper(bar, n)
+
+@test
+def test_eta1(n):
+    bar = ProgressIndicator(components=[ETA1()])
+    return eta_test_helper(bar, n)
 
 @test
 def test_myextension(n):
@@ -101,16 +109,6 @@ def test_myextension(n):
 @test
 def test_extension_spinner(n):
     bar = ProgressIndicator(components=[Spinner()])
-    bar.begin()
-    for i in range(n):
-        bar.publish()
-        time.sleep(0.01)
-    bar.end()
-    return n/100
-
-@test
-def test_extension_ellipses(n):
-    bar = ProgressIndicator(components=[Ellipses()])
     bar.begin()
     for i in range(n):
         bar.publish()
@@ -171,10 +169,10 @@ def main():
     test_decorator(n)
     test_context_manager(n)
     test_eta(n)
+    test_eta1(n)
     test_with_print(n)
     test_myextension(n)
     test_extension_spinner(n)
-    test_extension_ellipses(n)
     test_extension_loader(n)
     #benchmark()
 

@@ -71,7 +71,7 @@ class ProgressIndicator:
     def _register_default_providers(self):
         self.register_provider(RateProvider())
         self.register_provider(ETAProvider())
-        self.register_provider(ETANewProvider())
+        self.register_provider(ETA1Provider())
 
     def begin(self):
         """Performs initial tasks prior to printing progress bar.
@@ -435,8 +435,9 @@ class SimpleProgressBar(ProgressIndicator):
 
 class AdvancedProgressBar(ProgressIndicator):
     def __init__(self):
-        from progressindicator.extensions import Percentage, Timer, ETA, ETANew, Rate, Bar
-        super().__init__(components = [Percentage(), Bar(), Rate(), Timer(), ETA(), ETANew()])
+        from progressindicator.extensions import Percentage, Timer, ETA1, Rate, Bar
+        super().__init__(components = [Percentage(), Bar(), Rate(), "Time:",
+                                       Timer(), "ETA:", ETA1()])
 
 def display_progress(bar):
     def display_progress(func):
