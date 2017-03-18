@@ -1,4 +1,4 @@
-from progressindicator.core import (SimpleProgressBar, AdvancedProgressBar,
+from progressindicator.core import (AdvancedProgressBar,
                                    ProgressIndicator, display_progress)
 
 from progressindicator.extensions import (Percentage, Rate, ETA, ETA1, Bar,
@@ -45,14 +45,14 @@ def generator(n):
 @test
 def test_generator_wrapper(n):
     bar = AdvancedProgressBar()
-    for i in bar(generator(n)):
+    for _ in bar(generator(n)):
         time.sleep(0.01)
     return n/100
 
 @test
 def test_iterator_wrapper(n):
     bar = AdvancedProgressBar()
-    for i in bar(range(n)):
+    for _ in bar(range(n)):
         time.sleep(0.01)
     return n/100
 
@@ -96,9 +96,7 @@ def test_eta1(n):
     bar = ProgressIndicator(components=[ETA1()])
     return eta_test_helper(bar, n)
 
-@test
-def test_myextension(n):
-    bar = ProgressIndicator(components=[Percentage(), MyExtension()])
+def extension_test_helper_determinate(bar, n):
     bar.begin()
     for i in range(n):
         bar.publish(100*(i+1)/n)
@@ -106,25 +104,48 @@ def test_myextension(n):
     bar.end()
     return n/100
 
-@test
-def test_extension_spinner(n):
-    bar = ProgressIndicator(components=[Spinner()])
+def extension_test_helper_indeterminate(bar, n):
     bar.begin()
-    for i in range(n):
+    for _ in range(n):
         bar.publish()
         time.sleep(0.01)
     bar.end()
     return n/100
 
 @test
+def test_myextension(n):
+    bar = ProgressIndicator(components=[Percentage(), MyExtension()])
+    return extension_test_helper_determinate(bar, n)
+
+@test
+def test_extension_spinner(n):
+    bar = ProgressIndicator(components=[Spinner()])
+    return extension_test_helper_indeterminate(bar, n)
+
+@test
 def test_extension_loader(n):
     bar = ProgressIndicator(components=[Loader()])
-    bar.begin()
-    for i in range(n):
-        bar.publish()
-        time.sleep(0.01)
-    bar.end()
-    return n/100
+    return extension_test_helper_indeterminate(bar, n)
+
+@test
+def test_extension_bar(n):
+    bar = ProgressIndicator(components=[Bar()])
+    return extension_test_helper_determinate(bar, n)
+
+@test
+def test_extension_bouncing_bar(n):
+    bar = ProgressIndicator(components=[BouncingBar()])
+    return extension_test_helper_indeterminate(bar, n)
+
+@test
+def test_extension_rate(n):
+    bar = ProgressIndicator(components=[Rate()])
+    return extension_test_helper_indeterminate(bar, n)
+
+@test
+def test_extension_percentage(n):
+    bar = ProgressIndicator(components=[Percentage()])
+    return extension_test_helper_determinate(bar, n)
 
 @test
 def test_with_print(n):
@@ -140,7 +161,7 @@ def test_with_print(n):
 
 def benchmark():
     stmts = ['[i for i in range(int(1e7))]',
-    'from progress_manager.core import AdvancedProgressBar; [i for i in AdvancedProgressBar()(range(int(1e7)))]']
+    'from progressindicator.core import AdvancedProgressBar; [i for i in AdvancedProgressBar()(range(int(1e7)))]']
     import timeit
     for s in stmts:
         print(timeit.timeit(stmt=s, number=1))
@@ -174,6 +195,10 @@ def main():
     test_myextension(n)
     test_extension_spinner(n)
     test_extension_loader(n)
+    test_extension_bar(n)
+    test_extension_bouncing_bar(n)
+    test_extension_rate(n)
+    test_extension_percentage(n)
     #benchmark()
 
 if __name__ == '__main__':

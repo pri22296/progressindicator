@@ -27,10 +27,10 @@ class ProgressIndicator:
     ----------
     clear_on_task_completion : bool
         Whether Progress Bar is cleared on calling `end`.
-        
+
     min_value : int, float
         Minimum value of the progress.
-        
+
     max_value : int, float
         Maximum value of the progress
 
@@ -43,7 +43,7 @@ class ProgressIndicator:
     components : list
         List of components used to build the progress bar.
     """
-    
+
     def __init__(self, components, min_value=0, max_value=100,
                  stream=sys.stderr, max_update_interval=0.5):
         import collections
@@ -239,7 +239,9 @@ class ProgressIndicator:
         provider : BaseProvider
             An instance of the Custom BaseProvider child class.
         """
-        assert isinstance(provider, BaseProvider)
+        #assert isinstance(provider, BaseProvider)
+        if not isinstance(provider, BaseProvider):
+            raise TypeError("provider must be of type BaseProvider, not {}".format(type(provider).__name__))
         tag = provider.get_tag()
         if tag in self._registered_providers:
             raise ValueError("Another provider exists for the tag {}".format(tag))
@@ -430,7 +432,7 @@ class ProgressIndicator:
 
 class SimpleProgressBar(ProgressIndicator):
     def __init__(self):
-        from progressindicator.extensions import Percentage, Timer, ETANew, Rate, Bar
+        from progressindicator.extensions import Percentage, Bar
         super().__init__(components = [Percentage(), Bar()])
 
 class AdvancedProgressBar(ProgressIndicator):
@@ -461,7 +463,6 @@ def main():
     n = 10000000
     for i in range(n):
         bar.publish((i+1)*100/n)
-        pass
     bar.end()
 
     pr.disable()

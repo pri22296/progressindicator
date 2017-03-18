@@ -24,7 +24,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
     __init__ should be called like BaseExtension.__init__(self, requirements)
     """
     @abc.abstractmethod
-    def __init__(self, requirements = [], update_interval=None):
+    def __init__(self, requirements, update_interval=None):
         self._value = None
         self._requirements = requirements
         self._update_interval = update_interval
@@ -51,7 +51,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         prev_params : array_like
             Values of all keys specified in the requirements of the extension
             when the extension was last updated.
-            
+
         params : array_like
             Values of all keys specified in the requirements of the extension.
 
@@ -169,7 +169,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
 
 class BaseProvider(object, metaclass = abc.ABCMeta):
     @abc.abstractmethod
-    def __init__(self, tag, requirements = []):
+    def __init__(self, tag, requirements):
         self._value = None
         self._requirements = requirements
         self._tag = tag
