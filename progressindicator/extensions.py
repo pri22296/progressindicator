@@ -2,6 +2,7 @@
 from progressindicator.base import BaseExtension
 from progressindicator.tags import *
 
+
 class Bar(BaseExtension):
     """Extension to display Progress bar in console.
 
@@ -24,7 +25,7 @@ class Bar(BaseExtension):
     """
     def __init__(self, length=60, begin_entity='[', filler_entity='#',
                  empty_entity=' ', end_entity=']'):
-        BaseExtension.__init__(self, requirements = [TAG_PERCENTAGE])
+        BaseExtension.__init__(self, requirements=[TAG_PERCENTAGE])
         self.length = length
         self.begin_entity = begin_entity
         self.filler_entity = filler_entity
@@ -51,8 +52,6 @@ class Bar(BaseExtension):
         bar = self._get_bar(current_entity_count)
         self.set_value(bar)
 
-    def on_invalidated(self, params):
-        pass
 
 class BouncingBar(BaseExtension):
     """
@@ -81,10 +80,10 @@ class BouncingBar(BaseExtension):
         Speed of the filler (Default 200)
     """
     def __init__(self, length=60, begin_entity='[', filler_entity='*',
-                 empty_entity=' ', end_entity=']', velocity=200):
+                 empty_entity=' ', end_entity=']', velocity=100):
         BaseExtension.__init__(self,
-                               requirements = [TAG_TIME_SINCE_BEGIN,
-                                               TAG_DELTATIME],
+                               requirements=[TAG_TIME_SINCE_BEGIN,
+                                             TAG_DELTATIME],
                                update_interval=0.1)
         self.length = length
         self.filler = filler_entity
@@ -105,7 +104,7 @@ class BouncingBar(BaseExtension):
     def _set_position(self, pos):
         self.position = max(min(pos, self.length - 1), 0)
 
-    def on_validated(self, params):
+    def on_update(self, params):
         if 0 < self.position < self.length - 1:
             pass
         else:
@@ -113,12 +112,10 @@ class BouncingBar(BaseExtension):
         self._set_position(self.position + int(self.velocity * params[1]))
         self.set_value(self._get_bar(self.position))
 
-    def on_invalidated(self, params):
-        on_validated(params)
-
     def on_end(self, params):
         self.position = self.length - 1
         self.set_value(self._get_bar(self.position))
+
 
 class Alternator(BaseExtension):
     """This Extension displays items from a List in a sequential order
@@ -138,12 +135,14 @@ class Alternator(BaseExtension):
         self.set_value(self._char_iter[self._current_pos])
         self._current_pos = (self._current_pos + 1) % len(self._char_iter)
 
+
 class Spinner(Alternator):
     """This Extension displays a visual cue for a task with indeterminate
     progress. It displays a rotating marker to indicate progress of a task.
     """
     def __init__(self):
         super().__init__(['\\', '|', '/', '-'])
+
 
 class Loader(Alternator):
     """This Extension displays a visual cue for a task with indeterminate
@@ -160,13 +159,13 @@ class Loader(Alternator):
     def __init__(self, char='.', n=3):
         char_iter = [char*i for i in range(n+1)]
         super().__init__(char_iter)
-        
+
 
 class Timer(BaseExtension):
     """This Extension provides total time since the task was started.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_TIME_SINCE_BEGIN])
+        BaseExtension.__init__(self, requirements=[TAG_TIME_SINCE_BEGIN])
 
     def on_validated(self, params):
         time_ = params[0]
@@ -177,15 +176,15 @@ class Timer(BaseExtension):
 
     def _get_formatted_time(self, time):
         import datetime
-        return str(datetime.timedelta(0, int(time) , 0))
-    
+        return str(datetime.timedelta(0, int(time), 0))
+
 
 class ETA(Timer):
     """This Extension displays the expected time left for the task to be
     completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_ETA])
+        BaseExtension.__init__(self, requirements=[TAG_ETA])
 
 
 class ETA1(Timer):
@@ -193,14 +192,14 @@ class ETA1(Timer):
     to be completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_ETA1])
+        BaseExtension.__init__(self, requirements=[TAG_ETA1])
 
 
 class Rate(BaseExtension):
     """This Extension displays the rate at which calls to `publish` are made.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_RATE])
+        BaseExtension.__init__(self, requirements=[TAG_RATE])
 
     def on_validated(self, params):
         rate = params[0]
@@ -214,7 +213,7 @@ class Percentage(BaseExtension):
     """This Extension displays percentage of the task completed.
     """
     def __init__(self):
-        BaseExtension.__init__(self, requirements = [TAG_PERCENTAGE])
+        BaseExtension.__init__(self, requirements=[TAG_PERCENTAGE])
 
     def on_validated(self, params):
         percentage = params[0]
@@ -222,4 +221,3 @@ class Percentage(BaseExtension):
 
     def on_invalidated(self, params):
         self.set_value('UNKNOWN')
-

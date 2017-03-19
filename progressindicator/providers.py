@@ -1,6 +1,7 @@
+import time
 from progressindicator.base import BaseProvider
 from progressindicator.tags import *
-import time
+
 
 class ETAProvider(BaseProvider):
     """Default Provider for an estimate of the time remaining for the
@@ -19,7 +20,7 @@ class ETAProvider(BaseProvider):
             self.set_value(eta)
         except ZeroDivisionError:
             pass
-            
+
 
 class ETA1Provider(BaseProvider):
     """Default Provider for an alternate estimate of the time remaining for the
@@ -35,12 +36,13 @@ class ETA1Provider(BaseProvider):
 
     def on_validated(self, params):
         try:
-            expected_left_iterations = params[0] * (100 - params[1]) / params[1]
+            expected_left_iterations = (params[0]
+                                        * (100 - params[1])
+                                        / params[1])
             eta_new = expected_left_iterations / params[2]
             self.set_value(eta_new)
         except ZeroDivisionError:
             pass
-            
 
 
 class RateProvider(BaseProvider):
@@ -53,13 +55,9 @@ class RateProvider(BaseProvider):
                               tag=TAG_RATE,
                               requirements=[TAG_ITERATIONS])
         self.time_prev = time.time()
-        #self.value_start = 0
         self.value_prev = 0
 
     def on_begin(self, params):
-        #try:
-            #self.set_value(1/params[1])
-        #except ZeroDivisionError:
         self.set_value(0)
 
     def on_validated(self, params):

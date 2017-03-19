@@ -18,6 +18,10 @@ Introduction
 .. image:: https://api.codacy.com/project/badge/Grade/d0ff0f3846b64d05b60b68cb993ed002
     :target: https://www.codacy.com/app/pri22296/progressindicator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pri22296/progressindicator&amp;utm_campaign=Badge_Grade
     
+.. image:: https://landscape.io/github/pri22296/progressindicator/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/pri22296/progressindicator/master
+   :alt: Code Health
+
 .. image:: https://readthedocs.org/projects/progressindicator/badge/?version=latest
     :alt: Documentation Status
     :target: http://progressindicator.readthedocs.io/en/latest/?badge=latest

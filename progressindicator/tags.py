@@ -48,7 +48,7 @@
 
    Refers to the expected time(s) the task would need to complete
 
-.. data:: TAG_ETA_NEW
+.. data:: TAG_ETA1
 
    Refers to an alternate implementation of expected time(s)
    the task would need to complete
@@ -57,7 +57,7 @@
 
    Refers to current rate of calls to publish
 """
-#Tags for built-in stats
+# Tags for built-in stats
 
 TAG_VALUE = 'value'
 TAG_MIN_VALUE = 'min_value'
@@ -71,7 +71,7 @@ TAG_DELTATIME = 'deltatime'
 TAG_LAST_UPDATED_AT = 'last_updated_at'
 TAG_TIME_SINCE_UPDATE = 'time_since_update'
 
-#Tags for built-in providers
+# Tags for built-in providers
 TAG_ETA = 'eta'
 TAG_ETA1 = 'eta1'
 TAG_RATE = 'rate'

@@ -1,9 +1,10 @@
 import time
+import sys
 from progressindicator.base import BaseExtension, BaseProvider
 from progressindicator.tags import *
-import sys
 from progressindicator.providers import *
 sys.setcheckinterval(10)
+
 
 class ProgressIndicator:
     """Utility Class to display Progress Bars in console.
@@ -57,7 +58,11 @@ class ProgressIndicator:
         self._printed_char_num = 0
         self._registered_providers = dict()
         self._loaded_providers = dict()
-        
+        self._iterator = None
+        self._range = max_value - min_value
+        self._ordered_providers_tags = []
+        self._update_interval = max_update_interval
+
         self.seperator = ' '
         self.min_value = min_value
         self.max_value = max_value
@@ -65,13 +70,27 @@ class ProgressIndicator:
         self.max_update_interval = max_update_interval
         self.clear_on_task_completion = True
         self.components = components
-        
+
         self._register_default_providers()
 
     def _register_default_providers(self):
         self.register_provider(RateProvider())
         self.register_provider(ETAProvider())
         self.register_provider(ETA1Provider())
+
+    def _fire_event(self, event):
+        for tag in self._ordered_providers_tags:
+            provider = self._loaded_providers[tag]
+            required_tags = provider.get_requirements()
+            params = [self._stats[i] for i in required_tags]
+            getattr(provider, event)(params)
+            self._stats[tag] = provider.get_value()
+
+        for component in self.components:
+            if isinstance(component, BaseExtension):
+                requirements = component.get_requirements()
+                params = [self._stats[i] for i in requirements]
+                getattr(component, event)(params)
 
     def begin(self):
         """Performs initial tasks prior to printing progress bar.
@@ -92,16 +111,12 @@ class ProgressIndicator:
                     component_update_intervals.append(self.max_update_interval)
                 for requirement in requirements:
                     self._load_provider(requirement)
-                #params = [self._stats[i] for i in requirements]
-                #component._on_begin(params)
 
         try:
             self._update_interval = min(min(component_update_intervals), self.max_update_interval)
         except TypeError:
             self._update_interval = self.max_update_interval
 
-        #self._load_provider('begin_time')
-        #self._load_provider('end_time')
         self._stats[TAG_VALUE] = None
         self._stats[TAG_MAX_VALUE] = self.max_value
         self._stats[TAG_MIN_VALUE] = self.min_value
@@ -115,24 +130,8 @@ class ProgressIndicator:
         self._stats[TAG_TIME_SINCE_UPDATE] = None
 
         self._range = self.max_value - self.min_value
-        
         self._ordered_providers_tags = self._topological_sort(self._loaded_providers.copy())
-
-        #self._update_stats('begin')
-        for tag in self._ordered_providers_tags:
-            provider = self._loaded_providers[tag]
-            required_tags = provider.get_requirements()
-            params = [self._stats[i] for i in required_tags]
-            provider.on_begin(params)
-            self._stats[tag] = provider.get_value()
-        
-        for component in self.components:
-            if isinstance(component, BaseExtension):
-                requirements = component.get_requirements()
-                params = [self._stats[i] for i in requirements]
-                component.on_begin(params)
-
-                
+        self._fire_event('on_begin')
         self._update_progress_bar()
         self._is_allowed_to_publish = True
 
@@ -152,31 +151,17 @@ class ProgressIndicator:
         self._stats[TAG_END_TIME] = time.time()
         self._stats[TAG_PERCENTAGE] = 100
         self._stats[TAG_TIME_SINCE_BEGIN] = time.time() - self._stats[TAG_BEGIN_TIME]
-        
-        #self._update_stats('end')
-        for tag in self._ordered_providers_tags:
-            provider = self._loaded_providers[tag]
-            required_tags = provider.get_requirements()
-            params = [self._stats[i] for i in required_tags]
-            provider.on_end(params)
-            self._stats[tag] = provider.get_value()
-        
-        for component in self.components:
-            if isinstance(component, BaseExtension):
-                requirements = component.get_requirements()
-                params = [self._stats[i] for i in requirements]
-                component.on_end(params)
+
+        self._fire_event('on_end')
         self._update_progress_bar()
-
         self._loaded_providers = {}
-
         if self.clear_on_task_completion:
             self._clear_progress_bar()
         self._is_allowed_to_publish = False
 
     def __next__(self):
         try:
-            value = next(self.iterator)
+            value = next(self._iterator)
             if self._stats.get(TAG_BEGIN_TIME, None) is None:
                 self.begin()
             else:
@@ -187,7 +172,7 @@ class ProgressIndicator:
             raise
 
     def __call__(self, iterable):
-        self.iterator = iter(iterable)
+        self._iterator = iter(iterable)
         self.min_value = 0
         try:
             self.max_value = len(iterable) - 1
@@ -210,26 +195,6 @@ class ProgressIndicator:
         if self._is_allowed_to_print:
             print(*args, **kwargs)
 
-    def _time_since_last_update(self):
-        return (self._stats[TAG_TIME_SINCE_BEGIN]
-                - self._stats_at_last_update[TAG_TIME_SINCE_BEGIN])
-
-    def _is_update_required(self, value)-> bool:
-
-        stats = self._stats
-        time_since_update = stats[TAG_TIME_SINCE_UPDATE]
-        if time_since_update < self.min_update_interval:
-            return False
-        if time_since_update < self._update_interval:
-            try:
-                if 100 * (value - stats[TAG_VALUE]) / (self.max_value - self.min_value) < 20:
-                    return False
-            except TypeError:
-                return False
-        return True
-
-        # Update if time since last update crossed max_update_interval
-
     def register_provider(self, provider):
         """Any custom providers needed for an extension should be registered
         using this method.
@@ -239,7 +204,6 @@ class ProgressIndicator:
         provider : BaseProvider
             An instance of the Custom BaseProvider child class.
         """
-        #assert isinstance(provider, BaseProvider)
         if not isinstance(provider, BaseProvider):
             raise TypeError("provider must be of type BaseProvider, not {}".format(type(provider).__name__))
         tag = provider.get_tag()
@@ -300,23 +264,6 @@ class ProgressIndicator:
             raise RuntimeError("cyclic dependency detected. dump = {}".format(data))
         else:
             return ordered_list
-        
-
-    def _update_stats(self, event):
-
-        #unordered_providers = list(self._loaded_providers.values())
-        #input()
-        stats = self._stats
-        for tag in self._ordered_providers_tags:
-            provider = self._loaded_providers[tag]
-            required_tags = provider.get_requirements()
-            params = [stats[i] for i in required_tags]
-            try:
-                provider.on_validated(params)
-                #getattr(provider, '_on_{}'.format(event))(params)
-                stats[tag] = provider.get_value()
-            except TypeError:
-                stats[tag] = None
 
     def publish(self, value=None):
         """Update the progress bar.
@@ -327,13 +274,10 @@ class ProgressIndicator:
             The current progress in percentage. It should be between
             `min_value` and `max_value`.
         """
-        #assert self._is_allowed_to_publish is True
-
-
         time_curr = time.time()
         stats = self._stats
         stats[TAG_ITERATIONS] += 1
-        
+
         time_since_update = time_curr - stats[TAG_LAST_UPDATED_AT]
 
         if time_since_update < self._update_interval:
@@ -355,7 +299,7 @@ class ProgressIndicator:
                 raise ValueError(
                     "'value' must be between {} and {}".format(
                         self.min_value, self.max_value))
-        
+
         stats[TAG_VALUE] = value
         stats[TAG_MAX_VALUE] = self.max_value
         stats[TAG_MIN_VALUE] = self.min_value
@@ -363,28 +307,12 @@ class ProgressIndicator:
             stats[TAG_PERCENTAGE] = 100 * (value - self.min_value) / (self.max_value - self.min_value)
         except (TypeError, ZeroDivisionError):
             stats[TAG_PERCENTAGE] = None
-        
-        for tag in self._ordered_providers_tags:
-            provider = self._loaded_providers[tag]
-            required_tags = provider.get_requirements()
-            params = [stats[i] for i in required_tags]
-            
-            provider.on_publish(params)
-            stats[tag] = provider.get_value()
-                
 
-        for component in self.components:
-            if isinstance(component, BaseExtension):
-                requirements = component.get_requirements()
-                params = [stats[i] for i in requirements]
-                component.on_update(params)
-        
+        self._fire_event('on_update')
         self._update_progress_bar()
-        
 
     def _update_progress_bar(self):
         """Updates Progress Bar."""
-        #self._stats_at_last_update = self._stats.copy()
         self._stats[TAG_LAST_UPDATED_AT] = time.time()
         result = []
         for component in self.components:
@@ -429,35 +357,40 @@ class ProgressIndicator:
         self._is_allowed_to_print = is_allowed_to_print
 
 
-
 class SimpleProgressBar(ProgressIndicator):
     def __init__(self):
         from progressindicator.extensions import Percentage, Bar
-        super().__init__(components = [Percentage(), Bar()])
+        super().__init__(components=[Percentage(), Bar()])
+
 
 class AdvancedProgressBar(ProgressIndicator):
     def __init__(self):
         from progressindicator.extensions import Percentage, Timer, ETA1, Rate, Bar
-        super().__init__(components = [Percentage(), Bar(), Rate(), "Time:",
-                                       Timer(), "ETA:", ETA1()])
+        super().__init__(components=[Percentage(), Bar(),
+                                     Rate(), "Time:",
+                                     Timer(), "ETA:", ETA1()]
+                        )
+
 
 def display_progress(bar):
-    def display_progress(func):
+    def display_progress_func(func):
         import functools
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             bar.begin()
-            a = func(*args, **kwargs)
+            return_value = func(*args, **kwargs)
             bar.end()
-            return a
+            return return_value
         return wrapper
-    return display_progress
+    return display_progress_func
+
 
 def main():
     import cProfile, pstats, io
     pr = cProfile.Profile()
     pr.enable()
-    
+
     bar = AdvancedProgressBar()
     bar.begin()
     n = 10000000
@@ -474,4 +407,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

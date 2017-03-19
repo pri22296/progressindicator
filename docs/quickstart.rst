@@ -151,7 +151,7 @@ Following is the list of all built-in tags.
 * :data:`~.tags.TAG_LAST_UPDATED_AT`
 * :data:`~.tags.TAG_TIME_SINCE_UPDATE`
 * :data:`~.tags.TAG_ETA`
-* :data:`~.tags.TAG_ETA_NEW`
+* :data:`~.tags.TAG_ETA1`
 * :data:`~.tags.TAG_RATE`
 
 You can then override several event methods of

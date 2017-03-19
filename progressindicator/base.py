@@ -2,7 +2,7 @@
 import abc
 
 
-class BaseExtension(object, metaclass = abc.ABCMeta):
+class BaseExtension(object, metaclass=abc.ABCMeta):
     """Base class for all extensions.
 
     All extensions must inherit from this class. This class provides various
@@ -65,8 +65,8 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         ProgressManager instance is updated by default every second
         automatically. Only return True when you want updates more frequently.
         You should not return True very often from this method. This method is
-        called everytime publish is called which may lead to output being printed
-        console on every call to publish and I/O operations are slow.
+        called everytime publish is called which may lead to output being
+        printed console on every call to publish and I/O operations are slow.
         """
         return False
 
@@ -78,7 +78,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         params : array_like
             Values of all keys specified in the requirements of the extension.
         """
-        return (None not in params)
+        return None not in params
 
     def set_value(self, value):
         """This method sets the content which is to be printed to console.
@@ -118,7 +118,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         This method is called at each update. It is recommended to override the
         higher level functions `on_validated` and `on_invalidated` instead of
         this method.
-        
+
         Parameters
         ----------
         params : array_like
@@ -146,7 +146,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
 
         This method is only called during an update if value of all tags
         required by the extension are valid.
-        
+
         Parameters
         ----------
         params : array_like
@@ -159,7 +159,7 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
 
         This method is only called during an update if value for atleast one
         tag required by the extension is invalid.
-        
+
         Parameters
         ----------
         params : array_like
@@ -167,7 +167,28 @@ class BaseExtension(object, metaclass = abc.ABCMeta):
         """
         pass
 
-class BaseProvider(object, metaclass = abc.ABCMeta):
+
+class BaseProvider(object, metaclass=abc.ABCMeta):
+    """Base class for all providers.
+
+    All providers must inherit from this class. This class provides various
+    methods which can be overidden to achieve desired behaviour.
+
+    Parameters
+    ----------
+    tag : str
+        A string which is not already a registered tag
+
+    requirements : array_like
+        iterable of strings where each string should be a built-in tag or a tag
+        provided by a registered custom provider.
+
+    Notes
+    -----
+    All providers need to explicitly call __init__ of the BaseProvider with
+    appropriate requirements. If an provider inherits from another provider,
+    __init__ should be called like BaseProvider.__init__(self, tag, requirements)
+    """
     @abc.abstractmethod
     def __init__(self, tag, requirements):
         self._value = None
@@ -224,16 +245,16 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         params : array_like
             Values of all keys specified in the requirements of the extension.
         """
-        self.on_publish(params)
+        self.on_update(params)
 
-    def on_publish(self, params):
+    def on_update(self, params):
         """Override this method to calculate the value for the provider at each
         publish.
 
-        This method is called on every publish. It is recommended to override the
-        higher level functions `on_validated` and `on_invalidated` instead of
-        this method.
-        
+        This method is called on every publish. It is recommended to override
+        the higher level functions `on_validated` and `on_invalidated` instead
+        of this method.
+
         Parameters
         ----------
         params : array_like
@@ -254,10 +275,10 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         params : array_like
             Values of all tags specified in the requirements of the extension.
         """
-        self.on_publish(params)
+        self.on_update(params)
 
     def _validate(self, params):
-        return (None not in params)
+        return None not in params
 
     def on_validated(self, params):
         """Override this method to calculate the value for the provider at each
@@ -265,7 +286,7 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
 
         This method is only called during an update if value of all keys in
         requirements are valid.
-        
+
         Parameters
         ----------
         params : array_like
@@ -277,13 +298,12 @@ class BaseProvider(object, metaclass = abc.ABCMeta):
         """Override this method to calculate the value for the provider at each
         publish.
 
-        This method is only called during an update if value for atleast one key
-        in requirements is invalid.
-        
+        This method is only called during an update if value for atleast one
+        key in requirements is invalid.
+
         Parameters
         ----------
         params : array_like
             Values of all keys specified in the requirements of the extension.
         """
         self.set_value(None)
-    
