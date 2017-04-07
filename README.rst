@@ -2,12 +2,7 @@
 Command Line Progress Indicator Library for Python 3
 ##########################################################################
 
-
-.. inclusion-marker-introduction-start
-
-**************************************************************************
-Introduction
-**************************************************************************
+.. inclusion-marker-badges-start
 
 .. image:: https://badge.fury.io/py/progressindicator.svg
     :target: https://badge.fury.io/py/progressindicator
@@ -19,12 +14,21 @@ Introduction
     :target: https://www.codacy.com/app/pri22296/progressindicator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pri22296/progressindicator&amp;utm_campaign=Badge_Grade
     
 .. image:: https://landscape.io/github/pri22296/progressindicator/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/pri22296/progressindicator/master
-   :alt: Code Health
+    :target: https://landscape.io/github/pri22296/progressindicator/master
+    :alt: Code Health
 
 .. image:: https://readthedocs.org/projects/progressindicator/badge/?version=latest
     :alt: Documentation Status
     :target: http://progressindicator.readthedocs.io/en/latest/?badge=latest
+
+.. inclusion-marker-badges-end
+
+
+.. inclusion-marker-introduction-start
+
+**************************************************************************
+Introduction
+**************************************************************************
 
 This Package provides ProgressIndicator class for easily providing
 visual cue about the progress of a task underway. Using the concept
