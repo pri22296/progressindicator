@@ -1,5 +1,5 @@
 ##########################################################################
-Command Line Progress Indicator Library for Python 3
+ProgressIndicator
 ##########################################################################
 
 .. inclusion-marker-badges-start
