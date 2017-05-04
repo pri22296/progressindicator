@@ -63,8 +63,9 @@ def test_context_manager(n):
             bar.publish(100*(i+1)/n)
     return n/100
 
-# Use this to test situations where rate of progress remains constant
-def extension_test_helper_determinate(bar, n):
+# Use this to test situations when progress is determinate and rate of
+# progress is constant
+def extension_test_helper_determinate_type1(bar, n):
     bar.begin()
     for i in range(n):
         bar.publish(100*(i+1)/n)
@@ -72,8 +73,8 @@ def extension_test_helper_determinate(bar, n):
     bar.end()
     return n/100
 
-# Use this to test situations where rate of progress fluctuates and
-# progress is determinate
+# Use this to test situations when progress is determinate but rate of
+# progress fluctuates.
 def extension_test_helper_determinate_type2(bar, n):
     bar.begin()
     for i in range(n):
@@ -87,9 +88,9 @@ def extension_test_helper_determinate_type2(bar, n):
     bar.end()
     return ((n/10) * 0.02) + ((7*n/10) * 0.01) + ((n/5) * 0.1)
 
-# Use this to test situations when progress is unknown quantitatively
-# but rate of progress is constant.
-def extension_test_helper_indeterminate(bar, n):
+# Use this to test situations when current progress is indeterminate but
+# rate of progress is constant.
+def extension_test_helper_indeterminate_type1(bar, n):
     bar.begin()
     for _ in range(n):
         bar.publish()
@@ -97,7 +98,7 @@ def extension_test_helper_indeterminate(bar, n):
     bar.end()
     return n/100
 
-# Use this to test situations when progress is unknown quantitatively but
+# Use this to test situations when current progress is indeterminate and
 # rate of progress fluctuates.
 def extension_test_helper_indeterminate_type2(bar, n):
     bar.begin()
@@ -115,7 +116,7 @@ def extension_test_helper_indeterminate_type2(bar, n):
 @test
 def test_myextension(n):
     bar = ProgressIndicator(components=[Percentage(), MyExtension()])
-    return extension_test_helper_determinate(bar, n)
+    return extension_test_helper_determinate_type1(bar, n)
 
 @test
 def test_extension_eta(n):
@@ -130,27 +131,27 @@ def test_extension_eta1(n):
 @test
 def test_extension_spinner(n):
     bar = ProgressIndicator(components=[Spinner()])
-    return extension_test_helper_indeterminate(bar, n)
+    return extension_test_helper_indeterminate_type1(bar, n)
 
 @test
 def test_extension_loader(n):
     bar = ProgressIndicator(components=[Loader()])
-    return extension_test_helper_indeterminate(bar, n)
+    return extension_test_helper_indeterminate_type1(bar, n)
 
 @test
 def test_extension_timer(n):
     bar = ProgressIndicator(components=[Timer()])
-    return extension_test_helper_indeterminate(bar, n)
+    return extension_test_helper_indeterminate_type1(bar, n)
 
 @test
 def test_extension_bar(n):
     bar = ProgressIndicator(components=[Bar()])
-    return extension_test_helper_determinate(bar, n)
+    return extension_test_helper_determinate_type1(bar, n)
 
 @test
 def test_extension_bouncing_bar(n):
     bar = ProgressIndicator(components=[BouncingBar()])
-    return extension_test_helper_indeterminate(bar, n)
+    return extension_test_helper_indeterminate_type1(bar, n)
 
 @test
 def test_extension_rate(n):
@@ -160,7 +161,7 @@ def test_extension_rate(n):
 @test
 def test_extension_percentage(n):
     bar = ProgressIndicator(components=[Percentage()])
-    return extension_test_helper_determinate(bar, n)
+    return extension_test_helper_determinate_type1(bar, n)
 
 @test
 def test_with_print(n):
@@ -199,7 +200,7 @@ class MyExtension(BaseExtension):
        self.set_value("Task is finished")
 
 def main():
-    n = 1000
+    n = 100
     # Testing various use cases
     test_generator_wrapper(n)
     test_iterator_wrapper(n)
