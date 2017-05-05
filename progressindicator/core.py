@@ -1,9 +1,10 @@
+from __future__ import print_function
+from __future__ import division
 import time
 import sys
-from progressindicator.base import BaseExtension, BaseProvider
-from progressindicator.tags import *
-from progressindicator.providers import *
-sys.setcheckinterval(10)
+from .base import BaseExtension, BaseProvider
+from .tags import *
+from .providers import RateProvider, ETAProvider, ETA1Provider
 
 
 class ProgressIndicator:
@@ -359,13 +360,13 @@ class ProgressIndicator:
 
 class SimpleProgressBar(ProgressIndicator):
     def __init__(self):
-        from progressindicator.extensions import Percentage, Bar
+        from .extensions import Percentage, Bar
         super().__init__(components=[Percentage(), Bar()])
 
 
 class AdvancedProgressBar(ProgressIndicator):
     def __init__(self):
-        from progressindicator.extensions import Percentage, Timer, ETA1, Rate, Bar
+        from .extensions import Percentage, Timer, ETA1, Rate, Bar
         super().__init__(components=[Percentage(), Bar(),
                                      Rate(), "Time:",
                                      Timer(), "ETA:", ETA1()]

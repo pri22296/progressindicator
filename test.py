@@ -1,18 +1,19 @@
-from progressindicator.core import (SimpleProgressBar,
-                                   ProgressIndicator, display_progress)
-
+from progressindicator.core import (SimpleProgressBar, ProgressIndicator,
+                                    display_progress)
 from progressindicator.extensions import (Percentage, Rate, ETA, ETA1, Bar,
-                                         BouncingBar, Timer, Spinner,
-                                          Loader)
-
+                                          BouncingBar, Timer, Spinner, Loader)
 from progressindicator.base import BaseExtension
 from progressindicator.tags import *
 
 import time
 import functools
-import shutil
+import sys
 
-term_width = shutil.get_terminal_size()
+if sys.version_info >= (3,3):
+    import shutil
+    term_width = shutil.get_terminal_size()[0]
+else:
+    term_width = 80
 
 def test(func):
     @functools.wraps(func)
@@ -24,7 +25,7 @@ def test(func):
         run_time = end_time - start_time
         print("\nSleep time = {:.2f}s\nTotal Runtime = {:.2f}s".format(rv, run_time))
         print("Estimated Overhead = {:.2%}\n\n".format((run_time - rv)/ rv))
-        print("*" * term_width[0])
+        print("*" * term_width)
         return rv
     return wrapper
 

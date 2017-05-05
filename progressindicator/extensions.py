@@ -1,6 +1,7 @@
 """This module contains the Built-in Extensions for ProgressIndicator class."""
-from progressindicator.base import BaseExtension
-from progressindicator.tags import *
+from __future__ import division
+from .base import BaseExtension
+from .tags import *
 
 
 class Bar(BaseExtension):

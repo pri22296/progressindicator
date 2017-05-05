@@ -1,6 +1,7 @@
+from __future__ import division
 import time
-from progressindicator.base import BaseProvider
-from progressindicator.tags import *
+from .base import BaseProvider
+from .tags import *
 
 
 class ETAProvider(BaseProvider):
