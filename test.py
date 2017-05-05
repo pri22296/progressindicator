@@ -9,7 +9,7 @@ import time
 import functools
 import sys
 
-if sys.version_info >= (3,3):
+if sys.version_info[:2] >= (3,3):
     import shutil
     term_width = shutil.get_terminal_size()[0]
 else:

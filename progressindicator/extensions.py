@@ -142,7 +142,7 @@ class Spinner(Alternator):
     progress. It displays a rotating marker to indicate progress of a task.
     """
     def __init__(self):
-        super().__init__(['\\', '|', '/', '-'])
+        Alternator.__init__(self, ['\\', '|', '/', '-'])
 
 
 class Loader(Alternator):
@@ -159,7 +159,7 @@ class Loader(Alternator):
     """
     def __init__(self, char='.', n=3):
         char_iter = [char*i for i in range(n+1)]
-        super().__init__(char_iter)
+        Alternator.__init__(self, char_iter)
 
 
 class Timer(BaseExtension):

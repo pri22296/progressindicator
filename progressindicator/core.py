@@ -172,6 +172,9 @@ class ProgressIndicator:
             self.end()
             raise
 
+    # Fix for python 2
+    next = __next__
+
     def __call__(self, iterable):
         self._iterator = iter(iterable)
         self.min_value = 0
@@ -193,7 +196,14 @@ class ProgressIndicator:
 
     def _print_if_allowed(self, *args, **kwargs):
         if self._is_allowed_to_print:
-            print(*args, **kwargs)
+            if sys.version_info[:2] < (3, 3):
+                flush = kwargs.pop('flush', False)
+                file = kwargs.get('file', sys.stdout)
+                print(*args, **kwargs)
+                if flush and (file is not None):
+                    file.flush()
+            else:
+                print(*args, **kwargs)
 
     def register_provider(self, provider):
         """Any custom providers needed for an extension should be registered
@@ -227,7 +237,10 @@ class ProgressIndicator:
         try:
             self._registered_providers.pop(tag)
         except KeyError:
-            raise ValueError("No provider exists for the tag {}".format(tag)) from None
+            # To support python version prior to 3.3
+            exc = ValueError("No provider exists for the tag {}".format(tag))
+            exc.__cause__ = None
+            raise exc
 
     def _load_provider(self, tag):
         if tag not in self._loaded_providers:
@@ -345,13 +358,13 @@ class ProgressIndicator:
                                flush=True)
         self._printed_char_num = 0
 
-    def allow_to_print(self, is_allowed_to_print: bool):
+    def allow_to_print(self, is_allowed_to_print):
         """Set whether ProgressIndicator instance is allowed to print to console.
 
         Parameters
         ----------
 
-        is_allowed_to_print
+        is_allowed_to_print : bool
             Whether ProgressIndicator instance has permission to print.
         """
         self._is_allowed_to_print = is_allowed_to_print
@@ -360,13 +373,13 @@ class ProgressIndicator:
 class SimpleProgressBar(ProgressIndicator):
     def __init__(self):
         from .extensions import Percentage, Bar
-        super().__init__(components=[Percentage(), Bar()])
+        ProgressIndicator.__init__(self, components=[Percentage(), Bar()])
 
 
 class AdvancedProgressBar(ProgressIndicator):
     def __init__(self):
         from .extensions import Percentage, Timer, ETA1, Rate, Bar
-        super().__init__(components=[Percentage(), Bar(),
+        ProgressIndicator.__init__(self, components=[Percentage(), Bar(),
                                      Rate(), "Time:",
                                      Timer(), "ETA:", ETA1()]
                         )

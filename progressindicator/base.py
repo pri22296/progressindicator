@@ -2,7 +2,8 @@
 import abc
 
 
-class BaseExtension(object, metaclass=abc.ABCMeta):
+class BaseExtension(object):
+    __metaclass__ = abc.ABCMeta
     """Base class for all extensions.
 
     All extensions must inherit from this class. This class provides various
@@ -168,7 +169,8 @@ class BaseExtension(object, metaclass=abc.ABCMeta):
         pass
 
 
-class BaseProvider(object, metaclass=abc.ABCMeta):
+class BaseProvider(object):
+    __metaclass__ = abc.ABCMeta
     """Base class for all providers.
 
     All providers must inherit from this class. This class provides various
