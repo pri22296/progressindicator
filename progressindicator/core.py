@@ -178,8 +178,7 @@ class ProgressIndicator:
         try:
             self.max_value = len(iterable) - 1
         except TypeError:
-            import math
-            self.max_value = math.inf
+            self.max_value = float('inf')
         return self
 
     def __iter__(self):
