@@ -55,10 +55,10 @@ class RateProvider(BaseProvider):
         BaseProvider.__init__(self,
                               tag=TAG_RATE,
                               requirements=[TAG_ITERATIONS])
-        self.time_prev = time.time()
-        self.value_prev = 0
 
     def on_begin(self, params):
+        self.time_prev = time.time()
+        self.value_prev = 0
         self.set_value(0)
 
     def on_validated(self, params):
