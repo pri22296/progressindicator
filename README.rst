@@ -6,6 +6,9 @@ ProgressIndicator
 
 .. image:: https://badge.fury.io/py/progressindicator.svg
     :target: https://badge.fury.io/py/progressindicator
+    
+.. image:: https://coveralls.io/repos/github/pri22296/progressindicator/badge.svg?branch=master
+    :target: https://coveralls.io/github/pri22296/progressindicator?branch=master
 
 .. image:: https://travis-ci.org/pri22296/progressindicator.svg?branch=master
     :target: https://travis-ci.org/pri22296/progressindicator
