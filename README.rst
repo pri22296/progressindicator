@@ -7,6 +7,9 @@ ProgressIndicator
 .. image:: https://badge.fury.io/py/progressindicator.svg
     :target: https://badge.fury.io/py/progressindicator
     
+.. image:: https://img.shields.io/pypi/pyversions/progressindicator.svg
+    :target: https://pypi.python.org/pypi/progressindicator/
+    
 .. image:: https://coveralls.io/repos/github/pri22296/progressindicator/badge.svg?branch=master
     :target: https://coveralls.io/github/pri22296/progressindicator?branch=master
 
