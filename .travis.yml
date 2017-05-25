@@ -17,7 +17,17 @@ install:
 
 script:
     - coverage run test.py
-    
+
 after_success:
     - coveralls
 
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: pri22296
+  password:
+    secure: w+UGWiKHTvK+MdfN9Y1b11i78FCEZybgyaZVxzKB9C3slXbmgDqrg+GS6EzRG4fjZ+fz2cYOg2omRuw535LSmzDtE/1oqVUND0lsHf8hM0SLd8nTbRSeGX98P8rG3Z3kJWCybQv57i86Mq/dU/7FMkzVMImnVHiShxX+mjW+qDrIyK3FEnEaBwjwkJCiAWUsXh28ko8fV/NR7qhuUILJUqRW0f1P56UKRgkeY6qU50ngd1uPzOpblDYJvTVRS+Bhn8HBg0N8JxHGljMpGHsBktjuaHQPDJNHitk9Om204itHYe2J3XaD3VkrVPnT1Dau+FcF8n+pmd8D/HqE4IP7rDbizKDXGWOHOR69ktc7EwrIQDHftXnEiyh+rFxV9Z4t7cRuHwUFG9DX/Bo4imjT1N+2/hmHC2Q4kgSTrC6Ua7xZgb3ZJSpmkNXYJ77S99u0F7jmZwZvHnBwLmu1XC16Y/TrUIxr5pGpAgPowsTSOjgI2/fd4O1qvlvnJf3SFzGk6ZL8h0takYrxOB6XRjFn1u++8CSiBxDtjXdbYKsIihvaYNr440JIstplT69o/SW8ONvzJRTIetHWlJ1MWeWQgZWKSnjbmcWv48uNjA2OTvYl6ZG4XOGXHqDmPH3vULQDTCPO/SI7XheY424BhBohxQtGnFDA6XbAibr833l2yYY=
+  on:
+    tags: true
+    repo: pri22296/progressindicator
+    python: '3.6'
